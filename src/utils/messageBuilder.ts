@@ -18,6 +18,7 @@ export interface MessageOptions {
   tier?: Tier;
   companyName?: string;
   custCare?: string;
+  notes?: string[];
 }
 
 /**
@@ -54,7 +55,9 @@ export function buildMessage(rates: OilRates, opts: MessageOptions = {}): string
     if (!firstSection) lines.push("");
     firstSection = false;
 
-    lines.push(`*${brand} ${OIL_LABELS[oilType]}*`);
+    // prepend a colored icon for visual grouping (emoji fallback)
+    const OIL_ICON: Record<OilType, string> = { SF: "🟨", SOYA: "🟩", PALM: "🟧" };
+    lines.push(`${OIL_ICON[oilType]} *${brand} ${OIL_LABELS[oilType]}*`);
     lines.push("");
 
     for (const p of group) {
@@ -72,6 +75,14 @@ export function buildMessageWithFooter(rates: OilRates, opts: MessageOptions = {
   const {
     companyName = "BHAGYODAY PROTEINS & OIL REFINERY PVT LTD VAIJAPUR",
     custCare = "+91-7249717971",
+    notes = [
+      "NOTE: (ST) = SECOND TIN.",
+      "CD: SAME DAY CHEQUE RS.5/NOG & SAME DAY RTGS RS. 10/NOG.",
+      "BOOKING VALIDITY 10 DAYS (CARRYING CHARGES OF RS. 2 NOG/DAY).",
+      "DAILY RATES ARE VALID TILL WORKING HRS TILL 6PM.",
+      "UNLOADING CHARGES WILL BE GIVEN 1 RS/NOG ONLY.",
+      "PAYMENT VALIDITY 7 DAYS CHEQUE COMPULSORY.",
+    ],
   } = opts;
 
   const footerLines: string[] = [];
@@ -79,5 +90,8 @@ export function buildMessageWithFooter(rates: OilRates, opts: MessageOptions = {
   if (companyName) footerLines.push(`> *${companyName}*`);
   if (custCare) footerLines.push(`> Cust.Care: ${custCare}`);
 
-  return `${base}\n\n${footerLines.join("\n")}`;
+  // append legal/notes block (not quoted) after a blank line
+  const notesBlock = notes && notes.length ? `\n${notes.join("\n")}` : "";
+
+  return `${base}\n\n${footerLines.join("\n")}${notesBlock}`;
 }
