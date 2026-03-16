@@ -350,6 +350,19 @@ html, body {
   border-bottom: 1px solid var(--c-border2);
 }
 
+/* Brand header prominence */
+.brand-name {
+  display: inline-block;
+  font-weight: 900;
+  font-size: 0.95rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-right: 0.5rem;
+}
+.brand-white { color: var(--c-amber); }
+.brand-besttaste { color: var(--c-green); }
+
+
 .price-table .product-name {
   color: var(--c-text);
   font-weight: 500;

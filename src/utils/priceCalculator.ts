@@ -17,10 +17,12 @@ export function calculatePrice(
   const oilRate = rates[product.oilType];
   const base = oilRate * product.packSize;
 
-  // Prefer per-oil offsets; fall back to legacy per-tier adjustments if offsets are missing.
-  const offset = product.offsets?.[product.oilType] ?? product.adjustments?.[tier] ?? 0;
+  // Per-oil offset (common base offset for that product & oil type)
+  const offsetForOil = product.offsets?.[product.oilType] ?? product.adjustments?.["self"] ?? 0;
 
-  // Return number rounded to two decimals for fractional pack sizes
-  const price = base + offset;
+  // Tier-specific extra markup = adjustments[tier] - adjustments[self]
+  const tierExtra = product.adjustments ? (product.adjustments[tier] - (product.adjustments["self"] ?? 0)) : 0;
+
+  const price = base + offsetForOil + tierExtra;
   return Math.round(price * 100) / 100;
 }
