@@ -82,7 +82,7 @@ export function ProductTable({ rates, tier, onTierChange }: ProductTableProps) {
         "900GM POUCH",
         "800GM POUCH",
       ],
-      PALM: ["14.800KG TIN (ST)", "12.800 KG TIN (ST)", "840GM POUCH"],
+      PALM: ["14.800KG TIN (ST)", "12.800KG TIN (ST)", "840GM POUCH"],
     },
   };
 

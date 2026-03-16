@@ -242,6 +242,31 @@ export const products: Product[] = [
     offsets: { SF: 140, SOYA: 120, PALM: 110 },
     adjustments: { self: 100, other: 120, dealer: 130 },
   },
+  // BestTaste palm variants (added to match spreadsheet sections)
+  {
+    name: "14.800KG TIN (ST)",
+    brand: "BESTTASTE",
+    oilType: "PALM",
+    packSize: 14.8,
+    offsets: { SF: 110, SOYA: 110, PALM: 110 },
+    adjustments: { self: 110, other: 130, dealer: 140 },
+  },
+  {
+    name: "12.800KG TIN (ST)",
+    brand: "BESTTASTE",
+    oilType: "PALM",
+    packSize: 12.8,
+    offsets: { SF: 110, SOYA: 110, PALM: 110 },
+    adjustments: { self: 110, other: 130, dealer: 140 },
+  },
+  {
+    name: "840GM POUCH",
+    brand: "BESTTASTE",
+    oilType: "PALM",
+    packSize: 0.84,
+    offsets: { SF: 7.5, SOYA: 7.5, PALM: 7.5 },
+    adjustments: { self: 7.5, other: 27.5, dealer: 37.5 },
+  },
   {
     name: "840GM POUCH",
     oilType: "PALM",
