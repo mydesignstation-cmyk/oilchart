@@ -123,7 +123,14 @@ export function buildMessage(rates: OilRates, opts: MessageOptions = {}): string
 
       for (const p of group) {
         const price = calculatePrice(p, rates, tier);
-        const priceStr = price.toFixed(2);
+
+        // hide trailing .00 for whole numbers, otherwise show two decimals
+        const rounded = Math.round(price * 100) / 100;
+        const isWhole = Math.abs(rounded - Math.trunc(rounded)) < 0.005;
+        const priceStr = isWhole
+          ? rounded.toLocaleString("en-IN", { maximumFractionDigits: 0 })
+          : rounded.toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
         lines.push(`${p.name} - ${priceStr}`);
       }
     }
