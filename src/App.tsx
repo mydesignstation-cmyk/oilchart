@@ -10,7 +10,7 @@ const DEFAULT_RATES: OilRates = { SF: 167, SOYA: 146, PALM: 140 };
 
 export default function App() {
   const [rates, setRates] = useState<OilRates>(DEFAULT_RATES);
-  const [tier, setTier] = useState<Tier>("dealer");
+  const [tier, setTier] = useState<Tier>("self");
   const [chartNumber, setChartNumber] = useState("");
   const [rateDate, setRateDate] = useState(today);
 
