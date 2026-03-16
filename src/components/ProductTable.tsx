@@ -145,13 +145,31 @@ export function ProductTable({ rates, tier, onTierChange }: ProductTableProps) {
 
                         {group.map((product) => {
                           const price = calculatePrice(product, rates, tier);
-                          const priceStr = price.toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+                          // format: hide ".00" for whole numbers, otherwise show two decimals
+                          const rounded = Math.round(price * 100) / 100;
+                          const isWhole = Math.abs(rounded - Math.trunc(rounded)) < 0.005;
+                          const priceStr = isWhole
+                            ? rounded.toLocaleString("en-IN", { maximumFractionDigits: 0 })
+                            : rounded.toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+                          // color map per brand + oil type
+                          const getColor = (b: string | undefined, o: OilType) => {
+                            if (b === "BESTTASTE" && o === "SOYA") return "#86efac"; // light green
+                            if (b === "BESTTASTE" && o === "PALM") return "#fb923c"; // orange
+                            if (b === "WHITE APPLE" && o === "SF") return "#fcd34d"; // yellow
+                            if (b === "WHITE APPLE" && o === "SOYA") return "#16a34a"; // green
+                            return "#10b981"; // default teal/green
+                          };
+
+                          const priceColor = getColor(brand, oilType);
+
                           return (
                             <tr key={`${brand}-${oilType}-${product.name}`}>
                               <td className="product-name">{product.name}</td>
                               <td><span className={OIL_BADGE[oilType]}>{oilType}</span></td>
                               <td className="pack-cell">{product.packSize}</td>
-                              <td className="price-cell">₹{priceStr}</td>
+                              <td className="price-cell" style={{ color: priceColor }}>₹{priceStr}</td>
                             </tr>
                           );
                         })}
