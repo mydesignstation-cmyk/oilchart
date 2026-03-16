@@ -42,11 +42,11 @@ export const products: Product[] = [
 
   // BESTTASTE - SOYA OIL
   { name: "14.800KG TIN (ST)", brand: "BESTTASTE", oilType: "SOYA", packSize: 14.8, offsets: { SF: 110.2, SOYA: 110.2, PALM: 110.2 }, adjustments: { self: 110.2, other: 130.2, dealer: 140.2 } },
-  { name: "13KG TIN (ST)", brand: "BESTTASTE", oilType: "SOYA", packSize: 13, offsets: { SF: 110, SOYA: 110, PALM: 110 }, adjustments: { self: 110, other: 130, dealer: 140 } },
-  { name: "12.800KG TIN (ST)", brand: "BESTTASTE", oilType: "SOYA", packSize: 12.8, offsets: { SF: 110.2, SOYA: 110.2, PALM: 110.2 }, adjustments: { self: 110.2, other: 130.2, dealer: 140.2 } },
-  { name: "12.800KG JAR", brand: "BESTTASTE", oilType: "SOYA", packSize: 12.8, offsets: { SF: 140.2, SOYA: 140.2, PALM: 140.2 }, adjustments: { self: 140.2, other: 160.2, dealer: 170.2 } },
-  { name: "900GM POUCH", brand: "BESTTASTE", oilType: "SOYA", packSize: 0.9, offsets: { SF: 7.5, SOYA: 7.5, PALM: 7.5 }, adjustments: { self: 7.5, other: 27.5, dealer: 37.5 } },
-  { name: "800GM POUCH", brand: "BESTTASTE", oilType: "SOYA", packSize: 0.8, offsets: { SF: 7.5, SOYA: 7.5, PALM: 7.5 }, adjustments: { self: 7.5, other: 27.5, dealer: 37.5 } },
+  { name: "13KG TIN (ST)", brand: "BESTTASTE", oilType: "SOYA", packSize: 13, offsets: { SF: 110, SOYA: 110, PALM: 110 }, dynamicOffsets: { SOYA: { slope: 0, intercept: 110 } }, adjustments: { self: 110, other: 130, dealer: 140 } },
+  { name: "12.800KG TIN (ST)", brand: "BESTTASTE", oilType: "SOYA", packSize: 12.8, offsets: { SF: 110.2, SOYA: 110.2, PALM: 110.2 }, dynamicOffsets: { SOYA: { slope: 0, intercept: 110.19999999999982 } }, adjustments: { self: 110.2, other: 130.2, dealer: 140.2 } },
+  { name: "12.800KG JAR", brand: "BESTTASTE", oilType: "SOYA", packSize: 12.8, offsets: { SF: 140.2, SOYA: 140.2, PALM: 140.2 }, dynamicOffsets: { SOYA: { slope: 0, intercept: 140.19999999999982 } }, adjustments: { self: 140.2, other: 160.2, dealer: 170.2 } },
+  { name: "900GM POUCH", brand: "BESTTASTE", oilType: "SOYA", packSize: 0.9, offsets: { SF: 7.5, SOYA: 7.5, PALM: 7.5 }, dynamicOffsets: { SOYA: { slope: 0, intercept: 7.5 } }, adjustments: { self: 7.5, other: 27.5, dealer: 37.5 } },
+  { name: "800GM POUCH", brand: "BESTTASTE", oilType: "SOYA", packSize: 0.8, offsets: { SF: 7.5, SOYA: 7.5, PALM: 7.5 }, dynamicOffsets: { SOYA: { slope: 2.127472986603341e-16, intercept: 7.499999999999964 } }, adjustments: { self: 7.5, other: 27.5, dealer: 37.5 } },
 
   // BESTTASTE - PALM OIL
   { name: "14.800KG TIN (ST)", brand: "BESTTASTE", oilType: "PALM", packSize: 14.8, offsets: { SF: 110, SOYA: 110, PALM: 110 }, adjustments: { self: 110, other: 130, dealer: 140 } },
