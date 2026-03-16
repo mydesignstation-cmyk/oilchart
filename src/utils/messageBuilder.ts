@@ -78,7 +78,6 @@ export function buildMessageWithFooter(rates: OilRates, opts: MessageOptions = {
   // quoted lines for WhatsApp
   if (companyName) footerLines.push(`> *${companyName}*`);
   if (custCare) footerLines.push(`> Cust.Care: ${custCare}`);
-  footerLines.push(`> Sent via OilChart • mydesignstation@gmail.com`);
 
   return `${base}\n\n${footerLines.join("\n")}`;
 }
