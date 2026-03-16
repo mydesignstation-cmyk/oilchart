@@ -11,6 +11,49 @@ const OIL_LABELS: Record<OilType, string> = {
 
 const OIL_ORDER: OilType[] = ["SF", "SOYA", "PALM"];
 
+// Preferred product sequence per brand + oil type. Products not listed will appear after these.
+const PREFERRED_SEQUENCE: Record<string, Partial<Record<OilType, string[]>>> = {
+  "WHITE APPLE": {
+    SF: [
+      "15KG TIN NEW",
+      "15LTR TIN NEW",
+      "15LTR JAR",
+      "13KG TIN NEW",
+      "13KG JAR",
+      "5LTR JAR(4)",
+      "5LTR JAR(3) PET",
+      "1LTR POUCH",
+      "840GM POUCH",
+    ],
+    SOYA: [
+      "15 KG TIN NEW",
+      "15LTR TIN NEW",
+      "15LTR JAR",
+      "13KG TIN NEW",
+      "13KG JAR",
+      "5LTR JAR",
+      "4.200KG JAR",
+      "2LTR JAR",
+      "1KG POUCH",
+      "0.5KG POUCH",
+      "1LTR POUCH",
+      "0.5LTR POUCH",
+      "840GM POUCH",
+    ],
+  },
+  BESTTASTE: {
+    SOYA: [
+      "14.800KG TIN (ST)",
+      "13KG TIN (ST)",
+      "12.800KG TIN (ST)",
+      "12.800KG JAR",
+      "900GM POUCH",
+      "800GM POUCH",
+    ],
+    PALM: ["14.800KG TIN (ST)", "12.800 KG TIN (ST)", "840GM POUCH"],
+  },
+};
+
 export interface MessageOptions {
   brand?: string;
   rateDate?: string;
@@ -56,8 +99,21 @@ export function buildMessage(rates: OilRates, opts: MessageOptions = {}): string
 
     // for each oil type in preferred order, list products for that brand
     for (const oilType of OIL_ORDER) {
-      const group = brandProducts.filter((p) => p.oilType === oilType);
+      let group = brandProducts.filter((p) => p.oilType === oilType);
       if (!group.length) continue;
+
+      // sort group according to preferred sequence if provided for this brand+oil
+      const orderList = PREFERRED_SEQUENCE[brandName as string]?.[oilType] ?? [];
+      if (orderList && orderList.length) {
+        group = group.slice().sort((a, b) => {
+          const ia = orderList.indexOf(a.name);
+          const ib = orderList.indexOf(b.name);
+          if (ia === -1 && ib === -1) return 0;
+          if (ia === -1) return 1;
+          if (ib === -1) return -1;
+          return ia - ib;
+        });
+      }
 
       if (!firstSection) lines.push("");
       firstSection = false;
