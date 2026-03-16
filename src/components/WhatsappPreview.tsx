@@ -14,7 +14,13 @@ interface WhatsappPreviewProps {
 export function WhatsappPreview({ rates, tier, chartNumber, rateDate }: WhatsappPreviewProps) {
   const [copied, setCopied] = useState(false);
 
-  const message = buildMessageWithFooter(rates, { tier, chartNumber, rateDate });
+  const message = buildMessageWithFooter(rates, {
+    tier,
+    chartNumber,
+    rateDate,
+    companyName: "BHAGYODAY PROTEINS & OIL REFINERY PVT LTD VAIJAPUR",
+    custCare: "+91-7249717971",
+  });
 
   async function handleCopy() {
     try {
