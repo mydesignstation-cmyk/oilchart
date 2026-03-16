@@ -50,8 +50,8 @@ export const products: Product[] = [
 
   // BESTTASTE - PALM OIL
   { name: "14.800KG TIN (ST)", brand: "BESTTASTE", oilType: "PALM", packSize: 14.8, offsets: { SF: 110, SOYA: 110, PALM: 110 }, adjustments: { self: 110, other: 130, dealer: 140 } },
-  { name: "12.800KG TIN (ST)", brand: "BESTTASTE", oilType: "PALM", packSize: 12.8, offsets: { SF: 110, SOYA: 110, PALM: 110 }, adjustments: { self: 110, other: 130, dealer: 140 } },
-  { name: "840GM POUCH", brand: "BESTTASTE", oilType: "PALM", packSize: 0.84, offsets: { SF: 7.5, SOYA: 7.5, PALM: 7.5 }, adjustments: { self: 7.5, other: 27.5, dealer: 37.5 } },
+  { name: "12.800KG TIN (ST)", brand: "BESTTASTE", oilType: "PALM", packSize: 12.8, offsets: { SF: 110, SOYA: 110, PALM: 110 }, dynamicOffsets: { PALM: { slope: 0, intercept: 110 } }, adjustments: { self: 110, other: 130, dealer: 140 } },
+  { name: "840GM POUCH", brand: "BESTTASTE", oilType: "PALM", packSize: 0.84, offsets: { SF: 7.5, SOYA: 7.5, PALM: 7.5 }, dynamicOffsets: { PALM: { slope: -0.13584825425246166, intercept: 31.86181736794983 } }, adjustments: { self: 7.5, other: 27.5, dealer: 37.5 } },
 ];
 
 export default products;
