@@ -68,6 +68,13 @@ export const products: Product[] = [
     offsets: { SF: -7.53, SOYA: -8.53, PALM: -2 },
     adjustments: { self: -1.5, other: 1, dealer: 2 },
   },
+  {
+    name: "840GM POUCH",
+    oilType: "SF",
+    packSize: 0.84,
+    offsets: { SF: 7.5, SOYA: 7.0, PALM: 6.5 },
+    adjustments: { self: 120, other: 140, dealer: 150 },
+  },
 
   // ── Soya Oil ───────────────────────────────────────────────────────────────
   {
@@ -98,6 +105,13 @@ export const products: Product[] = [
     offsets: { SF: -13, SOYA: -10, PALM: 13 },
     adjustments: { self: 18, other: 33, dealer: 38 },
   },
+  {
+    name: "840GM POUCH",
+    oilType: "SOYA",
+    packSize: 0.84,
+    offsets: { SF: 7.5, SOYA: 7.0, PALM: 6.5 },
+    adjustments: { self: 120, other: 140, dealer: 150 },
+  },
 
   // ── Palm Oil ───────────────────────────────────────────────────────────────
   {
@@ -127,5 +141,19 @@ export const products: Product[] = [
     packSize: 1,
     offsets: { SF: -7.53, SOYA: -8.53, PALM: -2 },
     adjustments: { self: -2, other: 0.5, dealer: 1.5 },
+  },
+  {
+    name: "12.800KG TIN",
+    oilType: "PALM",
+    packSize: 12.8,
+    offsets: { SF: 140, SOYA: 120, PALM: 110 },
+    adjustments: { self: 100, other: 120, dealer: 130 },
+  },
+  {
+    name: "840GM POUCH",
+    oilType: "PALM",
+    packSize: 0.84,
+    offsets: { SF: 7.5, SOYA: 7.0, PALM: 6.5 },
+    adjustments: { self: 120, other: 140, dealer: 150 },
   },
 ];
