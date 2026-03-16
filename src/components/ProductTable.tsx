@@ -28,6 +28,7 @@ interface ProductTableProps {
 }
 
 export function ProductTable({ rates, tier, onTierChange }: ProductTableProps) {
+  const SHOW_TIER_TABS = false; // soft-hide the Self/Other/Dealer tabs
   // Build brand-first grouping while preserving original product array order
   const groupedByBrand = useMemo(() => {
     const BRAND_ORDER = ["WHITE APPLE", "BESTTASTE"];
@@ -95,17 +96,19 @@ export function ProductTable({ rates, tier, onTierChange }: ProductTableProps) {
           <p className="card-title">Product Prices</p>
           <p className="card-desc">Updates live as rates change.</p>
         </div>
-        <div className="tier-switcher">
-          {TIERS.map((t) => (
-            <button
-              key={t}
-              className={`tier-btn${tier === t ? " active" : ""}`}
-              onClick={() => onTierChange(t)}
-            >
-              {TIER_LABELS[t]}
-            </button>
-          ))}
-        </div>
+        {SHOW_TIER_TABS && (
+          <div className="tier-switcher">
+            {TIERS.map((t) => (
+              <button
+                key={t}
+                className={`tier-btn${tier === t ? " active" : ""}`}
+                onClick={() => onTierChange(t)}
+              >
+                {TIER_LABELS[t]}
+              </button>
+            ))}
+          </div>
+        )}
       </div>
 
       <div style={{ overflowX: "auto" }}>
