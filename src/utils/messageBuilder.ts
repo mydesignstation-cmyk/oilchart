@@ -85,7 +85,7 @@ export function buildMessage(rates: OilRates, opts: MessageOptions = {}): string
 
   // Preferred brand ordering; any other brands appear after these in original discovery order
   const BRAND_ORDER = ["WHITE APPLE", "BESTTASTE"];
-  const allBrands = Array.from(new Set(products.map((p) => p.brand ?? "WHITE APPLE")));
+  const allBrands = Array.from(new Set(products.map((p) => p.brand).filter(Boolean as any)));
   const orderedBrands = [
     ...BRAND_ORDER.filter((b) => allBrands.includes(b)),
     ...allBrands.filter((b) => !BRAND_ORDER.includes(b)),
@@ -94,7 +94,7 @@ export function buildMessage(rates: OilRates, opts: MessageOptions = {}): string
   let firstSection = true;
   for (const brandName of orderedBrands) {
     // check whether this brand has any products at all
-    const brandProducts = products.filter((p) => (p.brand ?? "WHITE APPLE") === brandName);
+    const brandProducts = products.filter((p) => p.brand === brandName);
     if (!brandProducts.length) continue;
 
     // for each oil type in preferred order, list products for that brand

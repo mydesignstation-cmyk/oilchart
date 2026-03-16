@@ -31,7 +31,7 @@ export function ProductTable({ rates, tier, onTierChange }: ProductTableProps) {
   // Build brand-first grouping while preserving original product array order
   const groupedByBrand = useMemo(() => {
     const BRAND_ORDER = ["WHITE APPLE", "BESTTASTE"];
-    const allBrands = Array.from(new Set(products.map((p) => p.brand ?? "WHITE APPLE")));
+    const allBrands = Array.from(new Set(products.map((p) => p.brand).filter(Boolean as any)));
     const orderedBrands = [
       ...BRAND_ORDER.filter((b) => allBrands.includes(b)),
       ...allBrands.filter((b) => !BRAND_ORDER.includes(b)),
@@ -39,7 +39,7 @@ export function ProductTable({ rates, tier, onTierChange }: ProductTableProps) {
 
     return orderedBrands.map((brandName) => ({
       brand: brandName,
-      products: products.filter((p) => (p.brand ?? "WHITE APPLE") === brandName),
+      products: products.filter((p) => p.brand === brandName),
     }));
   }, []);
 
