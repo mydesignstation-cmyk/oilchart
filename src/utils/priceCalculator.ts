@@ -17,12 +17,19 @@ export function calculatePrice(
   const oilRate = rates[product.oilType];
   const base = oilRate * product.packSize;
 
-  // Per-oil offset (common base offset for that product & oil type)
-  const offsetForOil = product.offsets?.[product.oilType] ?? product.adjustments?.["self"] ?? 0;
+    // Support legacy numeric offsets as well as optional dynamic linear offsets:
+    // product.dynamicOffsets?.[oilType] = { slope: number, intercept: number }
+    let offsetForOil: number;
+    const dyn = (product as any).dynamicOffsets?.[product.oilType];
+    if (dyn && typeof dyn.slope === "number" && typeof dyn.intercept === "number") {
+      offsetForOil = dyn.intercept + dyn.slope * oilRate;
+    } else {
+      offsetForOil = product.offsets?.[product.oilType] ?? product.adjustments?.["self"] ?? 0;
+    }
 
   // Tier-specific extra markup = adjustments[tier] - adjustments[self]
   const tierExtra = product.adjustments ? (product.adjustments[tier] - (product.adjustments["self"] ?? 0)) : 0;
 
-  const price = base + offsetForOil + tierExtra;
-  return Math.round(price * 100) / 100;
+    const result = base + offsetForOil + tierExtra;
+    return Math.round(result * 100) / 100;
 }
