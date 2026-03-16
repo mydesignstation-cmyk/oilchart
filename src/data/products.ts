@@ -14,13 +14,13 @@ export interface Product {
 export const products: Product[] = [
   // WHITE APPLE - SUNFLOWER OIL
   { name: "15KG TIN NEW", brand: "WHITE APPLE", oilType: "SF", packSize: 15, offsets: { SF: 150, SOYA: 150, PALM: 82 }, adjustments: { self: 150, other: 190, dealer: 205 } },
-  { name: "15LTR TIN NEW", brand: "WHITE APPLE", oilType: "SF", packSize: 15, offsets: { SF: -75, SOYA: -47, PALM: -5 }, adjustments: { self: 15, other: 55, dealer: 70 } },
-  { name: "15LTR JAR", brand: "WHITE APPLE", oilType: "SF", packSize: 15, offsets: { SF: -85, SOYA: -57, PALM: -15 }, adjustments: { self: 5, other: 45, dealer: 60 } },
   { name: "13KG TIN NEW", brand: "WHITE APPLE", oilType: "SF", packSize: 13, offsets: { SF: 150, SOYA: 140, PALM: 110 }, adjustments: { self: 136, other: 139, dealer: 152 } },
   { name: "13KG JAR", brand: "WHITE APPLE", oilType: "SF", packSize: 13, offsets: { SF: 140, SOYA: 130, PALM: 110 }, adjustments: { self: 126, other: 129, dealer: 142 } },
-  { name: "5LTR JAR(4)", brand: "WHITE APPLE", oilType: "SF", packSize: 5, offsets: { SF: -13, SOYA: -10, PALM: 13 }, adjustments: { self: 18, other: 33, dealer: 38 } },
-  { name: "5LTR JAR(3) PET", brand: "WHITE APPLE", oilType: "SF", packSize: 5, offsets: { SF: -13, SOYA: -10, PALM: 13 }, adjustments: { self: 18, other: 33, dealer: 38 } },
-  { name: "1LTR POUCH", brand: "WHITE APPLE", oilType: "SF", packSize: 1, offsets: { SF: -7.53, SOYA: -8.53, PALM: -2 }, adjustments: { self: -1.5, other: 1, dealer: 2 } },
+  { name: "15LTR TIN NEW", brand: "WHITE APPLE", oilType: "SF", packSize: 15, offsets: { SF: -86, SOYA: -47, PALM: -5 }, adjustments: { self: 15, other: 55, dealer: 70 } },
+  { name: "15LTR JAR", brand: "WHITE APPLE", oilType: "SF", packSize: 15, offsets: { SF: -96, SOYA: -57, PALM: -15 }, adjustments: { self: 5, other: 45, dealer: 60 } },
+    { name: "5LTR JAR(4)", brand: "WHITE APPLE", oilType: "SF", packSize: 5, offsets: { SF: -16, SOYA: -10, PALM: 13 }, adjustments: { self: 18, other: 33, dealer: 38 } },
+    { name: "5LTR JAR(3) PET", brand: "WHITE APPLE", oilType: "SF", packSize: 5, offsets: { SF: -16, SOYA: -10, PALM: 13 }, adjustments: { self: 18, other: 33, dealer: 38 } },
+    { name: "1LTR POUCH", brand: "WHITE APPLE", oilType: "SF", packSize: 1, offsets: { SF: -8.25, SOYA: -8.53, PALM: -2 }, adjustments: { self: -1.5, other: 1, dealer: 2 } },
   { name: "840GM POUCH", brand: "WHITE APPLE", oilType: "SF", packSize: 0.84, offsets: { SF: 7.5, SOYA: 7.0, PALM: 6.5 }, adjustments: { self: 0, other: 2.5, dealer: 3.5 } },
 
   // WHITE APPLE - SOYA OIL
