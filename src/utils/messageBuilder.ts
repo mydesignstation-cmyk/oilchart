@@ -1,5 +1,5 @@
 import { products } from "@/data/products";
-import type { OilType, Tier } from "@/data/products";
+import type { OilType, Tier, Product } from "@/data/products";
 import { calculatePrice } from "./priceCalculator";
 import type { OilRates } from "./priceCalculator";
 
@@ -69,7 +69,7 @@ export interface MessageOptions {
  * Groups products by oil type and renders them with their calculated price.
  */
 export function buildMessage(rates: OilRates, opts: MessageOptions = {}): string {
-  const { brand = "WHITE APPLE", rateDate = "", chartNumber = "", tier = "dealer" } = opts;
+  const { rateDate = "", chartNumber = "", tier = "dealer" } = opts;
 
   const lines: string[] = [];
 
@@ -85,27 +85,29 @@ export function buildMessage(rates: OilRates, opts: MessageOptions = {}): string
 
   // Preferred brand ordering; any other brands appear after these in original discovery order
   const BRAND_ORDER = ["WHITE APPLE", "BESTTASTE"];
-  const allBrands = Array.from(new Set(products.map((p) => p.brand).filter(Boolean as any)));
-  const orderedBrands = [
+  const allBrands = Array.from(
+    new Set(products.map((p: Product) => p.brand).filter((b: unknown): b is string => Boolean(b)))
+  ) as string[];
+  const orderedBrands = ([
     ...BRAND_ORDER.filter((b) => allBrands.includes(b)),
     ...allBrands.filter((b) => !BRAND_ORDER.includes(b)),
-  ];
+  ] as string[]);
 
   let firstSection = true;
   for (const brandName of orderedBrands) {
     // check whether this brand has any products at all
-    const brandProducts = products.filter((p) => p.brand === brandName);
+    const brandProducts = products.filter((p: Product) => p.brand === brandName);
     if (!brandProducts.length) continue;
 
     // for each oil type in preferred order, list products for that brand
     for (const oilType of OIL_ORDER) {
-      let group = brandProducts.filter((p) => p.oilType === oilType);
+      let group = brandProducts.filter((p: Product) => p.oilType === oilType);
       if (!group.length) continue;
 
       // sort group according to preferred sequence if provided for this brand+oil
       const orderList = PREFERRED_SEQUENCE[brandName as string]?.[oilType] ?? [];
       if (orderList && orderList.length) {
-        group = group.slice().sort((a, b) => {
+        group = group.slice().sort((a: Product, b: Product) => {
           const ia = orderList.indexOf(a.name);
           const ib = orderList.indexOf(b.name);
           if (ia === -1 && ib === -1) return 0;
