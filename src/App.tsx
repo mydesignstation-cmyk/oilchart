@@ -6,7 +6,7 @@ import type { OilRates } from "@/utils/priceCalculator";
 import type { Tier } from "@/data/products";
 
 const today = new Date().toISOString().split("T")[0];
-const DEFAULT_RATES: OilRates = { SF: 100, SOYA: 200, PALM: 90 };
+const DEFAULT_RATES: OilRates = { SF: 167, SOYA: 146, PALM: 140 };
 
 export default function App() {
   const [rates, setRates] = useState<OilRates>(DEFAULT_RATES);
