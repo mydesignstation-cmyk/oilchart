@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { RefreshCw } from "lucide-react";
 import type { OilRates } from "@/utils/priceCalculator";
 
 interface RateControllerProps {
@@ -110,10 +109,7 @@ export function RateController({
         </div>
 
         <div className="rate-footer">
-          <button className="btn btn-primary" onClick={() => onUpdate(localRates, localChart, localDate)}>
-            <RefreshCw size={13} />
-            Refresh
-          </button>
+          {/* refresh button removed — inputs update live */}
           <div className="rates-summary">
             <span className="rate-chip">
               <span className="rate-chip-dot" style={{ background: "#D29922" }} />

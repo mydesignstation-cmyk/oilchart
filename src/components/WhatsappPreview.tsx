@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Check, Copy, Send } from "lucide-react";
-import { buildMessage } from "@/utils/messageBuilder";
+import { buildMessageWithFooter } from "@/utils/messageBuilder";
 import type { OilRates } from "@/utils/priceCalculator";
 import type { Tier } from "@/data/products";
 
@@ -14,7 +14,7 @@ interface WhatsappPreviewProps {
 export function WhatsappPreview({ rates, tier, chartNumber, rateDate }: WhatsappPreviewProps) {
   const [copied, setCopied] = useState(false);
 
-  const message = buildMessage(rates, { tier, chartNumber, rateDate });
+  const message = buildMessageWithFooter(rates, { tier, chartNumber, rateDate });
 
   async function handleCopy() {
     try {
