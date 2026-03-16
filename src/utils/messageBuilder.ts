@@ -63,3 +63,10 @@ export function buildMessage(rates: OilRates, opts: MessageOptions = {}): string
 
   return lines.join("\n");
 }
+
+// Append a small quoted footer for attribution when rendering in WhatsApp
+export function buildMessageWithFooter(rates: OilRates, opts: MessageOptions = {}) {
+  const base = buildMessage(rates, opts);
+  const footer = `> Sent via OilChart • mydesignstation@gmail.com`;
+  return `${base}\n\n${footer}`;
+}

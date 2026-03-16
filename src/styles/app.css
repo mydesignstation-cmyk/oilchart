@@ -237,6 +237,11 @@ html, body {
   gap: 1rem;
 }
 
+/* Mobile: stack all inputs into one column for compactness */
+@media (max-width: 640px) {
+  .rate-grid { grid-template-columns: 1fr; }
+}
+
 .rate-footer {
   display: flex;
   flex-wrap: wrap;
