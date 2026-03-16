@@ -121,11 +121,7 @@ export function ProductTable({ rates, tier, onTierChange }: ProductTableProps) {
               if (!brandProducts.length) return null;
               return (
                 <Fragment key={brand}>
-                  <tr className="brand-row">
-                    <td colSpan={4}>{brand}</td>
-                  </tr>
-
-                  {OIL_ORDER.map((oilType) => {
+                      {OIL_ORDER.map((oilType) => {
                     let group = brandProducts.filter((p) => p.oilType === oilType);
                     if (!group.length) return null;
 
@@ -144,7 +140,7 @@ export function ProductTable({ rates, tier, onTierChange }: ProductTableProps) {
                     return (
                       <Fragment key={`${brand}-${oilType}`}>
                         <tr className="group-row">
-                          <td colSpan={4}>{OIL_LABEL[oilType]}</td>
+                          <td colSpan={4}><strong>{brand}</strong> {OIL_LABEL[oilType]}</td>
                         </tr>
 
                         {group.map((product) => {
