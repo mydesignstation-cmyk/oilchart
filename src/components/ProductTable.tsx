@@ -28,14 +28,20 @@ interface ProductTableProps {
 }
 
 export function ProductTable({ rates, tier, onTierChange }: ProductTableProps) {
-  const grouped = useMemo(
-    () =>
-      OIL_ORDER.reduce<Partial<Record<OilType, typeof products>>>((acc, type) => {
-        acc[type] = products.filter((p) => p.oilType === type);
-        return acc;
-      }, {}),
-    [],
-  );
+  // Build brand-first grouping while preserving original product array order
+  const groupedByBrand = useMemo(() => {
+    const BRAND_ORDER = ["WHITE APPLE", "BESTTASTE"];
+    const allBrands = Array.from(new Set(products.map((p) => p.brand ?? "WHITE APPLE")));
+    const orderedBrands = [
+      ...BRAND_ORDER.filter((b) => allBrands.includes(b)),
+      ...allBrands.filter((b) => !BRAND_ORDER.includes(b)),
+    ];
+
+    return orderedBrands.map((brandName) => ({
+      brand: brandName,
+      products: products.filter((p) => (p.brand ?? "WHITE APPLE") === brandName),
+    }));
+  }, []);
 
   return (
     <div className="card">
@@ -68,23 +74,37 @@ export function ProductTable({ rates, tier, onTierChange }: ProductTableProps) {
             </tr>
           </thead>
           <tbody>
-            {OIL_ORDER.map((oilType) => {
-              const group = grouped[oilType];
-              if (!group?.length) return null;
+            {groupedByBrand.map(({ brand, products: brandProducts }) => {
+              if (!brandProducts.length) return null;
               return (
-                <Fragment key={oilType}>
-                  <tr className="group-row">
-                    <td colSpan={4}>{OIL_LABEL[oilType]}</td>
+                <Fragment key={brand}>
+                  <tr className="brand-row">
+                    <td colSpan={4}>{brand}</td>
                   </tr>
-                  {group.map((product) => {
-                    const price = Math.round(calculatePrice(product, rates, tier));
+
+                  {OIL_ORDER.map((oilType) => {
+                    const group = brandProducts.filter((p) => p.oilType === oilType);
+                    if (!group.length) return null;
+
                     return (
-                      <tr key={`${oilType}-${product.name}`}>
-                        <td className="product-name">{product.name}</td>
-                        <td><span className={OIL_BADGE[oilType]}>{oilType}</span></td>
-                        <td className="pack-cell">{product.packSize}</td>
-                        <td className="price-cell">₹{price.toLocaleString("en-IN")}</td>
-                      </tr>
+                      <Fragment key={`${brand}-${oilType}`}>
+                        <tr className="group-row">
+                          <td colSpan={4}>{OIL_LABEL[oilType]}</td>
+                        </tr>
+
+                        {group.map((product) => {
+                          const price = calculatePrice(product, rates, tier);
+                          const priceStr = price.toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                          return (
+                            <tr key={`${brand}-${oilType}-${product.name}`}>
+                              <td className="product-name">{product.name}</td>
+                              <td><span className={OIL_BADGE[oilType]}>{oilType}</span></td>
+                              <td className="pack-cell">{product.packSize}</td>
+                              <td className="price-cell">₹{priceStr}</td>
+                            </tr>
+                          );
+                        })}
+                      </Fragment>
                     );
                   })}
                 </Fragment>
