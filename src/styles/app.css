@@ -1,0 +1,465 @@
+/* ───────────────────────────────────────────────────
+   OIL RATE BROADCAST TOOL — Dark SaaS Design System
+   All visual styles live here so the design works
+   independently of Tailwind compilation status.
+─────────────────────────────────────────────────── */
+
+:root {
+  /* ── Palette ── */
+  --c-bg:           #0D1117;
+  --c-surface:      #161B22;
+  --c-surface2:     #1C2128;
+  --c-surface3:     #22272E;
+  --c-border:       #30363D;
+  --c-border2:      #21262D;
+
+  --c-text:         #E6EDF3;
+  --c-text-dim:     #C9D1D9;
+  --c-text-muted:   #8B949E;
+  --c-text-faint:   #6E7681;
+
+  --c-accent:       #388BFD;
+  --c-accent-dim:   rgba(56,139,253,0.15);
+  --c-accent-hover: #2F7FEB;
+
+  --c-green:        #3FB950;
+  --c-green-dim:    rgba(63,185,80,0.12);
+  --c-amber:        #D29922;
+  --c-amber-dim:    rgba(210,153,34,0.12);
+  --c-orange:       #F78166;
+  --c-orange-dim:   rgba(247,129,102,0.12);
+  --c-red:          #F85149;
+
+  /* ── Spacing ── */
+  --r:   10px;
+  --r-sm: 7px;
+  --r-lg: 14px;
+
+  /* ── Shadow ── */
+  --shadow-card: 0 0 0 1px var(--c-border), 0 4px 20px rgba(0,0,0,0.5);
+  --shadow-input: 0 0 0 3px var(--c-accent-dim);
+}
+
+/* ── Base reset ──────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  background: var(--c-bg);
+  color: var(--c-text);
+  font-family: 'Inter', 'Geist Variable', ui-sans-serif, system-ui, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  color-scheme: dark;
+}
+
+/* ── Page layout ─────────────────────────────────── */
+.page {
+  min-height: 100vh;
+  background: var(--c-bg);
+  background-image: radial-gradient(ellipse 80% 50% at 50% -10%,
+    rgba(56,139,253,0.07) 0%, transparent 60%);
+}
+
+.page-inner {
+  max-width: 1040px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 4rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* ── App header ──────────────────────────────────── */
+.app-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--c-border2);
+}
+
+.app-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #388BFD22, #388BFD44);
+  border: 1px solid rgba(56,139,253,0.3);
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+.app-title {
+  font-size: 1.375rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--c-text);
+  margin: 0;
+  line-height: 1.3;
+}
+
+.app-subtitle {
+  font-size: 0.8rem;
+  color: var(--c-text-muted);
+  margin: 0;
+  margin-top: 2px;
+}
+
+/* ── Card ────────────────────────────────────────── */
+.card {
+  background: var(--c-surface);
+  border: 1px solid var(--c-border);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+}
+
+.card-header {
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid var(--c-border2);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.card-header-left { flex: 1; }
+
+.card-title {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--c-text);
+  margin: 0;
+}
+
+.card-desc {
+  font-size: 0.775rem;
+  color: var(--c-text-muted);
+  margin: 3px 0 0;
+}
+
+.card-body {
+  padding: 1.25rem 1.5rem;
+}
+
+/* ── Field / Label ───────────────────────────────── */
+.field { display: flex; flex-direction: column; gap: 6px; }
+
+.field-label {
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--c-text-muted);
+}
+
+/* ── Input ───────────────────────────────────────── */
+.input {
+  width: 100%;
+  height: 2.375rem;
+  padding: 0 0.75rem;
+  background: var(--c-surface2);
+  border: 1px solid var(--c-border);
+  border-radius: var(--r-sm);
+  color: var(--c-text);
+  font-size: 0.875rem;
+  font-family: inherit;
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  color-scheme: dark;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.input::placeholder { color: var(--c-text-faint); }
+
+.input:hover { border-color: #444C56; }
+
+.input:focus {
+  border-color: var(--c-accent);
+  box-shadow: var(--shadow-input);
+}
+
+/* number spinner */
+.input[type=number]::-webkit-inner-spin-button,
+.input[type=number]::-webkit-outer-spin-button { opacity: 0.3; }
+
+/* date picker icon */
+.input[type=date]::-webkit-calendar-picker-indicator {
+  filter: invert(0.5);
+  cursor: pointer;
+}
+
+/* ── Button ──────────────────────────────────────── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 2.25rem;
+  padding: 0 1rem;
+  border: none;
+  border-radius: var(--r-sm);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+  text-decoration: none;
+}
+
+.btn svg { width: 14px; height: 14px; flex-shrink: 0; }
+
+.btn-primary {
+  background: var(--c-accent);
+  color: #fff;
+}
+.btn-primary:hover { background: var(--c-accent-hover); transform: translateY(-1px); }
+.btn-primary:active { transform: translateY(0); }
+
+.btn-ghost {
+  background: var(--c-surface2);
+  border: 1px solid var(--c-border);
+  color: var(--c-text-dim);
+}
+.btn-ghost:hover { border-color: #444C56; color: var(--c-text); }
+
+/* ── Rate grid ───────────────────────────────────── */
+.rate-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 1rem;
+}
+
+.rate-footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.875rem;
+  margin-top: 1.25rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--c-border2);
+}
+
+.rates-summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.rate-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 10px;
+  background: var(--c-surface2);
+  border: 1px solid var(--c-border);
+  border-radius: 999px;
+  font-size: 0.75rem;
+  color: var(--c-text-muted);
+}
+
+.rate-chip strong { color: var(--c-text); font-weight: 600; }
+
+.rate-chip-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--c-green);
+  flex-shrink: 0;
+}
+
+/* ── Tier Switcher ───────────────────────────────── */
+.tier-switcher {
+  display: inline-flex;
+  background: var(--c-surface2);
+  border: 1px solid var(--c-border);
+  border-radius: var(--r-sm);
+  padding: 3px;
+  gap: 2px;
+}
+
+.tier-btn {
+  padding: 4px 14px;
+  border-radius: 5px;
+  font-size: 0.775rem;
+  font-weight: 500;
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  color: var(--c-text-muted);
+  transition: all 0.15s;
+  font-family: inherit;
+}
+
+.tier-btn.active {
+  background: var(--c-accent);
+  color: #fff;
+}
+
+.tier-btn:not(.active):hover { color: var(--c-text); }
+
+/* ── Table ───────────────────────────────────────── */
+.price-table { width: 100%; border-collapse: collapse; font-size: 0.8375rem; }
+
+.price-table thead th {
+  padding: 0.625rem 1rem;
+  text-align: left;
+  font-size: 0.675rem;
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--c-text-faint);
+  border-bottom: 1px solid var(--c-border);
+  white-space: nowrap;
+}
+
+.price-table thead th:last-child { text-align: right; }
+
+.price-table tbody td {
+  padding: 0.7rem 1rem;
+  color: var(--c-text-dim);
+  border-bottom: 1px solid var(--c-border2);
+  vertical-align: middle;
+}
+
+.price-table tbody tr:last-child td { border-bottom: none; }
+
+.price-table tbody tr:hover td { background: rgba(255,255,255,0.015); }
+
+.price-table .group-row td {
+  padding: 0.45rem 1rem;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--c-text-faint);
+  background: var(--c-surface2);
+  border-top: 1px solid var(--c-border2);
+  border-bottom: 1px solid var(--c-border2);
+}
+
+.price-table .product-name {
+  color: var(--c-text);
+  font-weight: 500;
+}
+
+.price-table .price-cell {
+  text-align: right;
+  font-weight: 600;
+  color: var(--c-green);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.price-table .pack-cell {
+  color: var(--c-text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── Oil Badges ──────────────────────────────────── */
+.oil-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.oil-badge-sf  { background: var(--c-amber-dim);  color: var(--c-amber);  border: 1px solid rgba(210,153,34,0.2); }
+.oil-badge-soya{ background: var(--c-green-dim);  color: var(--c-green);  border: 1px solid rgba(63,185,80,0.2);  }
+.oil-badge-palm{ background: var(--c-orange-dim); color: var(--c-orange); border: 1px solid rgba(247,129,102,0.2); }
+
+/* ── WhatsApp Preview ────────────────────────────── */
+.wa-bubble-wrap {
+  background: #0B141A;
+  border-radius: var(--r-sm);
+  border: 1px solid #2A3942;
+  overflow: hidden;
+}
+
+.wa-header {
+  background: #1F2C34;
+  padding: 0.6rem 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-bottom: 1px solid #2A3942;
+}
+
+.wa-header-dot {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #00A884;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  flex-shrink: 0;
+}
+
+.wa-header-name {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: #E9EDEF;
+}
+
+.wa-header-sub {
+  font-size: 0.7rem;
+  color: #8696A0;
+}
+
+.wa-body {
+  padding: 0.875rem 1rem;
+  min-height: 220px;
+  display: flex;
+  align-items: flex-start;
+}
+
+.wa-message {
+  background: #1F2C34;
+  border-radius: 8px 8px 8px 2px;
+  padding: 0.6rem 0.875rem;
+  font-family: 'Segoe UI', 'Helvetica Neue', sans-serif;
+  font-size: 0.8375rem;
+  line-height: 1.65;
+  color: #E9EDEF;
+  white-space: pre-wrap;
+  word-break: break-word;
+  max-width: 100%;
+  position: relative;
+}
+
+.wa-message strong { color: #fff; }
+
+.wa-timestamp {
+  font-size: 0.65rem;
+  color: #8696A0;
+  text-align: right;
+  margin-top: 4px;
+}
+
+.wa-actions {
+  display: flex;
+  gap: 0.625rem;
+  padding: 0.875rem 1rem;
+  border-top: 1px solid #2A3942;
+  background: #111B21;
+}
+
+/* ── Empty state ─────────────────────────────────── */
+.empty-state {
+  padding: 3rem 1rem;
+  text-align: center;
+  color: var(--c-text-faint);
+  font-size: 0.8rem;
+}
