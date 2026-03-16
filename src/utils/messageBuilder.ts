@@ -16,6 +16,8 @@ export interface MessageOptions {
   rateDate?: string;
   chartNumber?: string;
   tier?: Tier;
+  companyName?: string;
+  custCare?: string;
 }
 
 /**
@@ -67,6 +69,16 @@ export function buildMessage(rates: OilRates, opts: MessageOptions = {}): string
 // Append a small quoted footer for attribution when rendering in WhatsApp
 export function buildMessageWithFooter(rates: OilRates, opts: MessageOptions = {}) {
   const base = buildMessage(rates, opts);
-  const footer = `> Sent via OilChart • mydesignstation@gmail.com`;
-  return `${base}\n\n${footer}`;
+  const {
+    companyName = "BHAGYODAY PROTEINS & OIL REFINERY PVT LTD VAIJAPUR",
+    custCare = "+91-7249717971",
+  } = opts;
+
+  const footerLines: string[] = [];
+  // quoted lines for WhatsApp
+  if (companyName) footerLines.push(`> *${companyName}*`);
+  if (custCare) footerLines.push(`> Cust.Care: ${custCare}`);
+  footerLines.push(`> Sent via OilChart • mydesignstation@gmail.com`);
+
+  return `${base}\n\n${footerLines.join("\n")}`;
 }
