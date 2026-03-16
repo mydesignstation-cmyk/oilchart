@@ -136,22 +136,22 @@ export function buildMessage(rates: OilRates, opts: MessageOptions = {}): string
 export function buildMessageWithFooter(rates: OilRates, opts: MessageOptions = {}) {
   const base = buildMessage(rates, opts);
   const {
-    companyName = "BHAGYODAY PROTEINS & OIL REFINERY PVT LTD VAIJAPUR",
+    companyName = "Bhagyoday Proteins & Oil Refinery Pvt Ltd, Vaijapur",
     custCare = "+91-7249717971",
     notes = [
-      "NOTE: (ST) = SECOND TIN.",
-      "CD: SAME DAY CHEQUE RS.5/NOG & SAME DAY RTGS RS. 10/NOG.",
-      "BOOKING VALIDITY 10 DAYS (CARRYING CHARGES OF RS. 2 NOG/DAY).",
-      "DAILY RATES ARE VALID TILL WORKING HRS TILL 6PM.",
-      "UNLOADING CHARGES WILL BE GIVEN 1 RS/NOG ONLY.",
-      "PAYMENT VALIDITY 7 DAYS CHEQUE COMPULSORY.",
+      "Note: (ST) = second tin.",
+      "CD: Same day cheque Rs. 5/NOG and same day RTGS Rs. 10/NOG.",
+      "Booking validity: 10 days (carrying charges of Rs. 2 NOG/day).",
+      "Daily rates are valid till working hours (6 PM).",
+      "Unloading charges will be given: Rs. 1/NOG only.",
+      "Payment validity: 7 days; cheque compulsory.",
     ],
   } = opts;
 
   const footerLines: string[] = [];
   // quoted lines for WhatsApp
-  if (companyName) footerLines.push(`> *${companyName}*`);
-  if (custCare) footerLines.push(`> Cust.Care: ${custCare}`);
+  if (companyName) footerLines.push(`> ${companyName}`);
+  if (custCare) footerLines.push(`> Cust. care: ${custCare}`);
 
   // append legal/notes block (not quoted) after a blank line
   const notesBlock = notes && notes.length ? `\n${notes.join("\n")}` : "";
