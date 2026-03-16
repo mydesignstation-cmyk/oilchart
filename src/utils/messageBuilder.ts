@@ -162,8 +162,13 @@ export function buildMessageWithFooter(rates: OilRates, opts: MessageOptions = {
   if (companyName) footerLines.push(`> ${companyName}`);
   if (custCare) footerLines.push(`> Cust. care: ${custCare}`);
 
-  // append legal/notes block (not quoted) after a blank line
-  const notesBlock = notes && notes.length ? `\n${notes.join("\n")}` : "";
+  // prepare notes block (not quoted). We'll insert an extra blank line
+  // between the quoted footer and the notes to give breathing room.
+  const notesBlock = notes && notes.length ? notes.join("\n") : "";
 
-  return `${base}\n\n${footerLines.join("\n")}${notesBlock}`;
+  if (notesBlock) {
+    return `${base}\n\n${footerLines.join("\n")}\n\n${notesBlock}`;
+  }
+
+  return `${base}\n\n${footerLines.join("\n")}`;
 }
