@@ -1,6 +1,6 @@
 import { Fragment, useMemo } from "react";
 import { products } from "@/data/products";
-import type { OilType, Tier } from "@/data/products";
+import type { OilType, Tier, Product } from "@/data/products";
 import { calculatePrice } from "@/utils/priceCalculator";
 import type { OilRates } from "@/utils/priceCalculator";
 
@@ -31,17 +31,19 @@ export function ProductTable({ rates, tier, onTierChange }: ProductTableProps) {
   // Build brand-first grouping while preserving original product array order
   const groupedByBrand = useMemo(() => {
     const BRAND_ORDER = ["WHITE APPLE", "BESTTASTE"];
-    const allBrands = Array.from(new Set(products.map((p) => p.brand).filter(Boolean as any)));
+    const allBrands = Array.from(
+      new Set(products.map((p: Product) => p.brand).filter((b: unknown): b is string => Boolean(b)))
+    ) as string[];
     const orderedBrands = [
       ...BRAND_ORDER.filter((b) => allBrands.includes(b)),
       ...allBrands.filter((b) => !BRAND_ORDER.includes(b)),
     ];
 
-    return orderedBrands.map((brandName) => ({
+    return orderedBrands.map((brandName: string) => ({
       brand: brandName,
-      products: products.filter((p) => p.brand === brandName),
+      products: products.filter((p: Product) => p.brand === brandName),
     }));
-  }, []);
+  }, []) as { brand: string; products: Product[] }[];
 
   // Preferred product sequence for rendering (brand -> oilType -> ordered names)
   const PREFERRED_SEQUENCE: Record<string, Partial<Record<OilType, string[]>>> = {
@@ -140,10 +142,13 @@ export function ProductTable({ rates, tier, onTierChange }: ProductTableProps) {
                     return (
                       <Fragment key={`${brand}-${oilType}`}>
                         <tr className="group-row">
-                          <td colSpan={4}><strong>{brand}</strong> {OIL_LABEL[oilType]}</td>
+                          <td colSpan={4}>
+                            <span className={`brand-name ${brand === 'WHITE APPLE' ? 'brand-white' : brand === 'BESTTASTE' ? 'brand-besttaste' : ''}`}>{brand}</span>
+                            {OIL_LABEL[oilType]}
+                          </td>
                         </tr>
 
-                        {group.map((product) => {
+                        {group.map((product: Product) => {
                           const price = calculatePrice(product, rates, tier);
 
                           // format: hide ".00" for whole numbers, otherwise show two decimals
