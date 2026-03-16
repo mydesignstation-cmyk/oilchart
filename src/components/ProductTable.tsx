@@ -58,7 +58,7 @@ export function ProductTable({ rates, tier, onTierChange }: ProductTableProps) {
         "840GM POUCH",
       ],
       SOYA: [
-        "15 KG TIN NEW",
+        "15KG TIN NEW",
         "15LTR TIN NEW",
         "15LTR JAR",
         "13KG TIN NEW",

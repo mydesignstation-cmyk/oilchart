@@ -63,6 +63,23 @@ export const products: Product[] = [
     offsets: { SF: -13, SOYA: -10, PALM: 13 },
     adjustments: { self: 18, other: 33, dealer: 38 },
   },
+  // Variants shown in spreadsheet (same pricing offsets as 5LTR JAR)
+  {
+    name: "5LTR JAR(4)",
+    oilType: "SF",
+    packSize: 5,
+    brand: "WHITE APPLE",
+    offsets: { SF: -13, SOYA: -10, PALM: 13 },
+    adjustments: { self: 18, other: 33, dealer: 38 },
+  },
+  {
+    name: "5LTR JAR(3) PET",
+    oilType: "SF",
+    packSize: 5,
+    brand: "WHITE APPLE",
+    offsets: { SF: -13, SOYA: -10, PALM: 13 },
+    adjustments: { self: 18, other: 33, dealer: 38 },
+  },
   {
     name: "1LTR POUCH",
     oilType: "SF",
