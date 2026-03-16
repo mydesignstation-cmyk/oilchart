@@ -37,32 +37,39 @@ export function buildMessage(rates: OilRates, opts: MessageOptions = {}): string
     lines.push("");
   }
 
-  // Group products by oil type
-  const grouped = products.reduce<Partial<Record<OilType, typeof products>>>(
-    (acc, p) => {
-      if (!acc[p.oilType]) acc[p.oilType] = [];
-      acc[p.oilType]!.push(p);
-      return acc;
-    },
-    {},
-  );
+  // Group products by brand first, then by oil type (preserve requested oil order)
+  const OIL_ICON: Record<OilType, string> = { SF: "🟨", SOYA: "🟩", PALM: "🟧" };
+
+  // Preferred brand ordering; any other brands appear after these in original discovery order
+  const BRAND_ORDER = ["WHITE APPLE", "BESTTASTE"];
+  const allBrands = Array.from(new Set(products.map((p) => p.brand ?? "WHITE APPLE")));
+  const orderedBrands = [
+    ...BRAND_ORDER.filter((b) => allBrands.includes(b)),
+    ...allBrands.filter((b) => !BRAND_ORDER.includes(b)),
+  ];
 
   let firstSection = true;
-  for (const oilType of OIL_ORDER) {
-    const group = grouped[oilType];
-    if (!group?.length) continue;
+  for (const brandName of orderedBrands) {
+    // check whether this brand has any products at all
+    const brandProducts = products.filter((p) => (p.brand ?? "WHITE APPLE") === brandName);
+    if (!brandProducts.length) continue;
 
-    if (!firstSection) lines.push("");
-    firstSection = false;
+    // for each oil type in preferred order, list products for that brand
+    for (const oilType of OIL_ORDER) {
+      const group = brandProducts.filter((p) => p.oilType === oilType);
+      if (!group.length) continue;
 
-    // prepend a colored icon for visual grouping (emoji fallback)
-    const OIL_ICON: Record<OilType, string> = { SF: "🟨", SOYA: "🟩", PALM: "🟧" };
-    lines.push(`${OIL_ICON[oilType]} *${brand} ${OIL_LABELS[oilType]}*`);
-    lines.push("");
+      if (!firstSection) lines.push("");
+      firstSection = false;
 
-    for (const p of group) {
-      const price = Math.round(calculatePrice(p, rates, tier));
-      lines.push(`${p.name} - ${price}`);
+      lines.push(`${OIL_ICON[oilType]} *${brandName} ${OIL_LABELS[oilType]}*`);
+      lines.push("");
+
+      for (const p of group) {
+        const price = calculatePrice(p, rates, tier);
+        const priceStr = price.toFixed(2);
+        lines.push(`${p.name} - ${priceStr}`);
+      }
     }
   }
 
