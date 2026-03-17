@@ -35,6 +35,12 @@ export function WhatsappPreview({ rates, tier, chartNumber, rateDate }: Whatsapp
     window.open(url, "_blank", "noopener,noreferrer");
   }
 
+  function handleWhatsAppOffice() {
+    const officeNumber = "917249717971";
+    const url = `https://wa.me/${officeNumber}?text=${encodeURIComponent(message)}`;
+    window.open(url, "_blank", "noopener,noreferrer");
+  }
+
   const now = new Date();
   const timeStr = now.toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit", hour12: true });
 
@@ -71,6 +77,10 @@ export function WhatsappPreview({ rates, tier, chartNumber, rateDate }: Whatsapp
             <button className="btn btn-ghost" onClick={handleCopy}>
               {copied ? <Check size={14} /> : <Copy size={14} />}
               {copied ? "Copied!" : "Copy Text"}
+            </button>
+            <button className="btn btn-ghost" onClick={handleWhatsAppOffice}>
+              <Send size={14} />
+              Send to Office
             </button>
             <button className="btn btn-primary" onClick={handleWhatsApp}>
               <Send size={14} />
