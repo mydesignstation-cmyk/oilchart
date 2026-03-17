@@ -475,6 +475,34 @@ html, body {
   background: #111B21;
 }
 
+.rate-image-panel {
+  margin-top: 1rem;
+  padding: 1rem;
+  border-radius: 12px;
+  background: linear-gradient(180deg, rgba(255, 250, 224, 0.06) 0%, rgba(255, 219, 96, 0.03) 100%);
+  border: 1px solid var(--c-border2);
+}
+
+.rate-image-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.85rem;
+}
+
+.rate-image-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+@media (max-width: 640px) {
+  .rate-image-top {
+    flex-direction: column;
+  }
+}
+
 /* ── Empty state ─────────────────────────────────── */
 .empty-state {
   padding: 3rem 1rem;
