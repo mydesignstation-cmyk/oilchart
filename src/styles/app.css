@@ -468,7 +468,8 @@ html, body {
 
 .wa-actions {
   display: flex;
-  gap: 0.625rem;
+  flex-wrap: wrap;
+  gap: 0.5rem;
   padding: 0.875rem 1rem;
   border-top: 1px solid #2A3942;
   background: #111B21;

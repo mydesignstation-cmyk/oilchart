@@ -74,9 +74,12 @@ export function WhatsappPreview({ rates, tier, chartNumber, rateDate }: Whatsapp
 
           {/* Action bar */}
           <div className="wa-actions">
-            <button className="btn btn-ghost" onClick={handleCopy}>
+            <button
+              className="btn btn-ghost"
+              onClick={handleCopy}
+              aria-label={copied ? "Copied" : "Copy Text"}
+            >
               {copied ? <Check size={14} /> : <Copy size={14} />}
-              {copied ? "Copied!" : "Copy Text"}
             </button>
             <button className="btn btn-ghost" onClick={handleWhatsAppOffice}>
               <Send size={14} />
