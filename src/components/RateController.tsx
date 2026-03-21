@@ -45,7 +45,7 @@ export function RateController({
       </div>
 
       <div className="card-body">
-        <div className="rate-grid">
+        <div className="rate-grid rate-grid-meta">
           <div className="field">
             <label className="field-label" htmlFor="rate-date">Date</label>
             <input
@@ -67,7 +67,9 @@ export function RateController({
               onChange={(e) => setChart(e.target.value)}
             />
           </div>
+        </div>
 
+        <div className="rate-grid rate-grid-oils">
           <div className="field">
             <label className="field-label" htmlFor="sf-rate">SF Rate (₹/kg)</label>
             <input
