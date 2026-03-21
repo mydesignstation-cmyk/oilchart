@@ -1,81 +1,59 @@
 import { useMemo, useState } from "react";
 import { Check, Copy, Download, Send } from "lucide-react";
 import { toBlob, toJpeg, toPng } from "html-to-image";
-import { buildMessageWithFooter } from "@/utils/messageBuilder";
-import { products } from "@/data/products";
-import { calculatePrice } from "@/utils/priceCalculator";
 import type { OilRates } from "@/utils/priceCalculator";
 import type { Tier } from "@/data/products";
 import { RateImageCard } from "@/components/RateImageCard";
+import type { CostSetupRow } from "@/data/costSetup";
+import { getHomepagePriceSections } from "@/utils/homepagePricing";
 
 interface WhatsappPreviewProps {
   rates: OilRates;
   tier: Tier;
+  costSetupRows: CostSetupRow[];
+  autoRound: boolean;
   chartNumber: string;
   rateDate: string;
 }
 
-export function WhatsappPreview({ rates, tier, chartNumber, rateDate }: WhatsappPreviewProps) {
+export function WhatsappPreview({ rates, tier, costSetupRows, autoRound, chartNumber, rateDate }: WhatsappPreviewProps) {
   const [copied, setCopied] = useState(false);
   const [downloading, setDownloading] = useState<"png" | "jpg" | null>(null);
   const [sharingImage, setSharingImage] = useState(false);
+  const [showPreview, setShowPreview] = useState(false);
 
-  const oilOrder = ["SF", "SOYA", "PALM"] as const;
-  const oilLabels: Record<(typeof oilOrder)[number], string> = {
-    SF: "SUNFLOWER OIL",
-    SOYA: "SOYA OIL",
-    PALM: "PALM OIL",
-  };
-  const brandOrder = ["WHITE APPLE", "BESTTASTE"];
-  const preferredSequence: Record<string, Partial<Record<(typeof oilOrder)[number], string[]>>> = {
-    "WHITE APPLE": {
-      SF: [
-        "15KG TIN NEW",
-        "15LTR TIN NEW",
-        "15LTR JAR",
-        "13KG TIN NEW",
-        "13KG JAR",
-        "5LTR JAR(4)",
-        "5LTR JAR(3) PET",
-        "1LTR POUCH",
-        "840GM POUCH",
-      ],
-      SOYA: [
-        "15KG TIN NEW",
-        "15LTR TIN NEW",
-        "15LTR JAR",
-        "13KG TIN NEW",
-        "13KG JAR",
-        "5LTR JAR",
-        "4.200KG JAR",
-        "2LTR JAR",
-        "1KG POUCH",
-        "0.5KG POUCH",
-        "1LTR POUCH",
-        "0.5LTR POUCH",
-        "840GM POUCH",
-      ],
-    },
-    BESTTASTE: {
-      SOYA: [
-        "14.800KG TIN (ST)",
-        "13KG TIN (ST)",
-        "12.800KG TIN (ST)",
-        "12.800KG JAR",
-        "900GM POUCH",
-        "800GM POUCH",
-      ],
-      PALM: ["14.800KG TIN (ST)", "12.800KG TIN (ST)", "840GM POUCH"],
-    },
-  };
+  const sections = useMemo(
+    () => getHomepagePriceSections(rates, tier, costSetupRows, autoRound),
+    [rates, tier, costSetupRows, autoRound],
+  );
 
-  const message = buildMessageWithFooter(rates, {
-    tier,
-    chartNumber,
-    rateDate,
-    companyName: "BHAGYODAY PROTEINS & OIL REFINERY PVT LTD VAIJAPUR",
-    custCare: "+91-7249717971",
-  });
+  const message = useMemo(() => {
+    const lines: string[] = [];
+    if (rateDate) lines.push(`Date: ${rateDate}`);
+    if (chartNumber) lines.push(`Rate Chart: ${chartNumber}`);
+    if (rateDate || chartNumber) lines.push("");
+
+    sections.forEach((section, sectionIndex) => {
+      if (sectionIndex > 0) lines.push("");
+      lines.push(`*${section.title.toUpperCase()}*`);
+      lines.push("");
+
+      section.items.forEach((item) => {
+        const rounded = Math.round(item.price * 100) / 100;
+        const isWhole = Math.abs(rounded - Math.trunc(rounded)) < 0.005;
+        const priceStr = isWhole
+          ? rounded.toLocaleString("en-IN", { maximumFractionDigits: 0 })
+          : rounded.toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        lines.push(`${item.name} - ${priceStr}`);
+      });
+    });
+
+    lines.push("");
+    lines.push("> BHAGYODAY PROTEINS & OIL REFINERY PVT LTD VAIJAPUR");
+    lines.push("> Cust. care: +91-7249717971");
+
+    return lines.join("\n");
+  }, [sections, rateDate, chartNumber]);
 
   async function handleCopy() {
     try {
@@ -97,61 +75,26 @@ export function WhatsappPreview({ rates, tier, chartNumber, rateDate }: Whatsapp
   }
 
   const rateData = useMemo(() => {
-    const allBrands = Array.from(
-      new Set(products.map((p) => p.brand).filter((b): b is string => Boolean(b)))
-    );
-    const orderedBrands = [
-      ...brandOrder.filter((b) => allBrands.includes(b)),
-      ...allBrands.filter((b) => !brandOrder.includes(b)),
-    ];
-
-    const sections = orderedBrands.flatMap((brand) => {
-      const byBrand = products.filter((p) => p.brand === brand);
-
-      return oilOrder.flatMap((oilType) => {
-        let group = byBrand.filter((p) => p.oilType === oilType);
-        if (!group.length) {
-          return [];
-        }
-
-        const orderList = preferredSequence[brand]?.[oilType] ?? [];
-        if (orderList.length) {
-          group = group.slice().sort((a, b) => {
-            const ia = orderList.indexOf(a.name);
-            const ib = orderList.indexOf(b.name);
-            if (ia === -1 && ib === -1) return 0;
-            if (ia === -1) return 1;
-            if (ib === -1) return -1;
-            return ia - ib;
-          });
-        }
-
-        return [
-          {
-            title: `${brand} ${oilLabels[oilType]}`,
-            products: group.map((item) => {
-              const price = calculatePrice(item, rates, tier);
-              const rounded = Math.round(price * 100) / 100;
-              const isWhole = Math.abs(rounded - Math.trunc(rounded)) < 0.005;
-              const priceStr = isWhole
-                ? rounded.toLocaleString("en-IN", { maximumFractionDigits: 0 })
-                : rounded.toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-
-              return { name: item.name, price: `₹${priceStr}` };
-            }),
-          },
-        ];
-      });
-    });
+    const imageSections = sections.map((section) => ({
+      title: section.title.toUpperCase(),
+      products: section.items.map((item) => {
+        const rounded = Math.round(item.price * 100) / 100;
+        const isWhole = Math.abs(rounded - Math.trunc(rounded)) < 0.005;
+        const priceStr = isWhole
+          ? rounded.toLocaleString("en-IN", { maximumFractionDigits: 0 })
+          : rounded.toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        return { name: item.name, price: `₹${priceStr}` };
+      }),
+    }));
 
     return {
       title: "OIL RATE LIST",
       date: rateDate,
       chartNumber,
       contact: "+91-7249717971",
-      sections,
+      sections: imageSections,
     };
-  }, [brandOrder, chartNumber, oilLabels, oilOrder, preferredSequence, rateDate, rates, tier]);
+  }, [sections, rateDate, chartNumber]);
 
   async function downloadImage(format: "png" | "jpg") {
     const node = document.getElementById("rate-card");
@@ -235,23 +178,38 @@ export function WhatsappPreview({ rates, tier, chartNumber, rateDate }: Whatsapp
       </div>
 
       <div className="card-body">
-        <div className="wa-bubble-wrap">
-          {/* Fake WA top bar */}
-          <div className="wa-header">
-            <div className="wa-header-dot">🫙</div>
-            <div>
-              <p className="wa-header-name">Rate Broadcast</p>
-              <p className="wa-header-sub">Oil Rates Group</p>
-            </div>
-          </div>
+        <div className="wa-toggle-row">
+          <label className="toggle-wrap">
+            <input
+              type="checkbox"
+              checked={showPreview}
+              onChange={(e) => setShowPreview(e.target.checked)}
+            />
+            <span>WhatsApp Preview {showPreview ? "ON" : "OFF"}</span>
+          </label>
+        </div>
 
-          {/* Chat body */}
-          <div className="wa-body">
-            <div className="wa-message">
-              {message}
-              <p className="wa-timestamp">{timeStr} ✓✓</p>
-            </div>
-          </div>
+        <div className="wa-bubble-wrap">
+          {showPreview && (
+            <>
+              {/* Fake WA top bar */}
+              <div className="wa-header">
+                <div className="wa-header-dot">🫙</div>
+                <div>
+                  <p className="wa-header-name">Rate Broadcast</p>
+                  <p className="wa-header-sub">Oil Rates Group</p>
+                </div>
+              </div>
+
+              {/* Chat body */}
+              <div className="wa-body">
+                <div className="wa-message">
+                  {message}
+                  <p className="wa-timestamp">{timeStr} ✓✓</p>
+                </div>
+              </div>
+            </>
+          )}
 
           {/* Action bar */}
           <div className="wa-actions">
@@ -271,7 +229,7 @@ export function WhatsappPreview({ rates, tier, chartNumber, rateDate }: Whatsapp
               Open in WhatsApp
             </button>
             <button
-              className="btn btn-primary"
+              className="btn btn-primary wa-share-image-btn"
               onClick={handleShareImageOnWhatsApp}
               disabled={sharingImage || downloading !== null}
             >
