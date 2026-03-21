@@ -1,10 +1,10 @@
 import { Fragment, useMemo } from "react";
-import { products } from "@/data/products";
-import type { OilType, Tier, Product } from "@/data/products";
-import { calculatePrice } from "@/utils/priceCalculator";
+import type { OilType, Tier } from "@/data/products";
 import type { OilRates } from "@/utils/priceCalculator";
+import type { CostSetupRow } from "@/data/costSetup";
+import { getHomepagePriceSections } from "@/utils/homepagePricing";
 
-const OIL_ORDER: OilType[] = ["SF", "SOYA", "PALM"];
+const TIER_LABELS: Record<Tier, string> = { self: "Self", other: "Other", dealer: "Dealer" };
 
 const OIL_LABEL: Record<OilType, string> = {
   SF: "Sunflower Oil",
@@ -18,76 +18,20 @@ const OIL_BADGE: Record<OilType, string> = {
   PALM: "oil-badge oil-badge-palm",
 };
 
-const TIERS: Tier[] = ["self", "other", "dealer"];
-const TIER_LABELS: Record<Tier, string> = { self: "Self", other: "Other", dealer: "Dealer" };
-
 interface ProductTableProps {
   rates: OilRates;
   tier: Tier;
   onTierChange: (t: Tier) => void;
+  costSetupRows: CostSetupRow[];
+  autoRound: boolean;
 }
 
-export function ProductTable({ rates, tier, onTierChange }: ProductTableProps) {
-  const SHOW_TIER_TABS = false; // soft-hide the Self/Other/Dealer tabs
-  // Build brand-first grouping while preserving original product array order
-  const groupedByBrand = useMemo(() => {
-    const BRAND_ORDER = ["WHITE APPLE", "BESTTASTE"];
-    const allBrands = Array.from(
-      new Set(products.map((p: Product) => p.brand).filter((b: unknown): b is string => Boolean(b)))
-    ) as string[];
-    const orderedBrands = [
-      ...BRAND_ORDER.filter((b) => allBrands.includes(b)),
-      ...allBrands.filter((b) => !BRAND_ORDER.includes(b)),
-    ];
-
-    return orderedBrands.map((brandName: string) => ({
-      brand: brandName,
-      products: products.filter((p: Product) => p.brand === brandName),
-    }));
-  }, []) as { brand: string; products: Product[] }[];
-
-  // Preferred product sequence for rendering (brand -> oilType -> ordered names)
-  const PREFERRED_SEQUENCE: Record<string, Partial<Record<OilType, string[]>>> = {
-    "WHITE APPLE": {
-      SF: [
-        "15KG TIN NEW",
-        "15LTR TIN NEW",
-        "15LTR JAR",
-        "13KG TIN NEW",
-        "13KG JAR",
-        "5LTR JAR(4)",
-        "5LTR JAR(3) PET",
-        "1LTR POUCH",
-        "840GM POUCH",
-      ],
-      SOYA: [
-        "15KG TIN NEW",
-        "15LTR TIN NEW",
-        "15LTR JAR",
-        "13KG TIN NEW",
-        "13KG JAR",
-        "5LTR JAR",
-        "4.200KG JAR",
-        "2LTR JAR",
-        "1KG POUCH",
-        "0.5KG POUCH",
-        "1LTR POUCH",
-        "0.5LTR POUCH",
-        "840GM POUCH",
-      ],
-    },
-    BESTTASTE: {
-      SOYA: [
-        "14.800KG TIN (ST)",
-        "13KG TIN (ST)",
-        "12.800KG TIN (ST)",
-        "12.800KG JAR",
-        "900GM POUCH",
-        "800GM POUCH",
-      ],
-      PALM: ["14.800KG TIN (ST)", "12.800KG TIN (ST)", "840GM POUCH"],
-    },
-  };
+export function ProductTable({ rates, tier, onTierChange, costSetupRows, autoRound }: ProductTableProps) {
+  const SHOW_TIER_TABS = false;
+  const sections = useMemo(
+    () => getHomepagePriceSections(rates, tier, costSetupRows, autoRound),
+    [rates, tier, costSetupRows, autoRound],
+  );
 
   return (
     <div className="card">
@@ -98,13 +42,13 @@ export function ProductTable({ rates, tier, onTierChange }: ProductTableProps) {
         </div>
         {SHOW_TIER_TABS && (
           <div className="tier-switcher">
-            {TIERS.map((t) => (
+            {["self", "other", "dealer"].map((t) => (
               <button
                 key={t}
                 className={`tier-btn${tier === t ? " active" : ""}`}
-                onClick={() => onTierChange(t)}
+                onClick={() => onTierChange(t as Tier)}
               >
-                {TIER_LABELS[t]}
+                {TIER_LABELS[t as Tier]}
               </button>
             ))}
           </div>
@@ -122,71 +66,45 @@ export function ProductTable({ rates, tier, onTierChange }: ProductTableProps) {
             </tr>
           </thead>
           <tbody>
-            {groupedByBrand.map(({ brand, products: brandProducts }) => {
-              if (!brandProducts.length) return null;
-              return (
-                <Fragment key={brand}>
-                      {OIL_ORDER.map((oilType) => {
-                    let group = brandProducts.filter((p) => p.oilType === oilType);
-                    if (!group.length) return null;
+            {sections.map((section) => (
+              <Fragment key={`${section.brand}-${section.oilType}`}>
+                <tr className="group-row">
+                  <td colSpan={4}>
+                    <span className={`brand-name ${section.brand === "WHITE APPLE" ? "brand-white" : section.brand === "BESTTASTE" ? "brand-besttaste" : ""}`}>
+                      {section.brand}
+                    </span>
+                    {OIL_LABEL[section.oilType]}
+                  </td>
+                </tr>
 
-                    const orderList = PREFERRED_SEQUENCE[brand]?.[oilType] ?? [];
-                    if (orderList && orderList.length) {
-                      group = group.slice().sort((a, b) => {
-                        const ia = orderList.indexOf(a.name);
-                        const ib = orderList.indexOf(b.name);
-                        if (ia === -1 && ib === -1) return 0;
-                        if (ia === -1) return 1;
-                        if (ib === -1) return -1;
-                        return ia - ib;
-                      });
-                    }
+                {section.items.map((item) => {
+                  const rounded = Math.round(item.price * 100) / 100;
+                  const isWhole = Math.abs(rounded - Math.trunc(rounded)) < 0.005;
+                  const priceStr = isWhole
+                    ? rounded.toLocaleString("en-IN", { maximumFractionDigits: 0 })
+                    : rounded.toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
-                    return (
-                      <Fragment key={`${brand}-${oilType}`}>
-                        <tr className="group-row">
-                          <td colSpan={4}>
-                            <span className={`brand-name ${brand === 'WHITE APPLE' ? 'brand-white' : brand === 'BESTTASTE' ? 'brand-besttaste' : ''}`}>{brand}</span>
-                            {OIL_LABEL[oilType]}
-                          </td>
-                        </tr>
+                  const getColor = (b: string, o: OilType) => {
+                    if (b === "BESTTASTE" && o === "SOYA") return "#86efac";
+                    if (b === "BESTTASTE" && o === "PALM") return "#fb923c";
+                    if (b === "WHITE APPLE" && o === "SF") return "#fcd34d";
+                    if (b === "WHITE APPLE" && o === "SOYA") return "#16a34a";
+                    return "#10b981";
+                  };
 
-                        {group.map((product: Product) => {
-                          const price = calculatePrice(product, rates, tier);
+                  const priceColor = getColor(section.brand, section.oilType);
 
-                          // format: hide ".00" for whole numbers, otherwise show two decimals
-                          const rounded = Math.round(price * 100) / 100;
-                          const isWhole = Math.abs(rounded - Math.trunc(rounded)) < 0.005;
-                          const priceStr = isWhole
-                            ? rounded.toLocaleString("en-IN", { maximumFractionDigits: 0 })
-                            : rounded.toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-
-                          // color map per brand + oil type
-                          const getColor = (b: string | undefined, o: OilType) => {
-                            if (b === "BESTTASTE" && o === "SOYA") return "#86efac"; // light green
-                            if (b === "BESTTASTE" && o === "PALM") return "#fb923c"; // orange
-                            if (b === "WHITE APPLE" && o === "SF") return "#fcd34d"; // yellow
-                            if (b === "WHITE APPLE" && o === "SOYA") return "#16a34a"; // green
-                            return "#10b981"; // default teal/green
-                          };
-
-                          const priceColor = getColor(brand, oilType);
-
-                          return (
-                            <tr key={`${brand}-${oilType}-${product.name}`}>
-                              <td className="product-name">{product.name}</td>
-                              <td><span className={OIL_BADGE[oilType]}>{oilType}</span></td>
-                              <td className="pack-cell">{product.packSize}</td>
-                              <td className="price-cell" style={{ color: priceColor }}>₹{priceStr}</td>
-                            </tr>
-                          );
-                        })}
-                      </Fragment>
-                    );
-                  })}
-                </Fragment>
-              );
-            })}
+                  return (
+                    <tr key={`${section.brand}-${section.oilType}-${item.name}`}>
+                      <td className="product-name">{item.name}</td>
+                      <td><span className={OIL_BADGE[item.oilType]}>{item.oilType}</span></td>
+                      <td className="pack-cell">{item.packSize}</td>
+                      <td className="price-cell" style={{ color: priceColor }}>₹{priceStr}</td>
+                    </tr>
+                  );
+                })}
+              </Fragment>
+            ))}
           </tbody>
         </table>
       </div>

@@ -496,7 +496,23 @@ html, body {
   background: #111B21;
 }
 
+.wa-toggle-row {
+  margin-bottom: 0.75rem;
+}
+
+/* Soft hidden on request; can be re-enabled by removing this rule. */
+.wa-share-image-btn {
+  display: none;
+}
+
+/* Soft hidden on request; can be re-enabled by removing this rule. */
+.cost-setup-preview-panel {
+  display: none;
+}
+
 .rate-image-panel {
+  /* Soft hidden on request; keep styles intact for quick unhide later. */
+  display: none;
   margin-top: 1rem;
   padding: 1rem;
   border-radius: 12px;
