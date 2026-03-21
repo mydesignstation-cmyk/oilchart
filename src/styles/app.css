@@ -237,9 +237,30 @@ html, body {
   gap: 1rem;
 }
 
+.rate-grid-oils {
+  margin-top: 1rem;
+}
+
 /* Mobile: stack all inputs into one column for compactness */
 @media (max-width: 640px) {
-  .rate-grid { grid-template-columns: 1fr; }
+  .rate-grid-meta {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.65rem;
+  }
+
+  .rate-grid-oils {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.65rem;
+  }
+
+  .rate-grid .field-label {
+    font-size: 0.62rem;
+  }
+
+  .rate-grid .input {
+    padding: 0 0.5rem;
+    font-size: 0.8rem;
+  }
 }
 
 .rate-footer {
@@ -473,6 +494,50 @@ html, body {
   padding: 0.875rem 1rem;
   border-top: 1px solid #2A3942;
   background: #111B21;
+}
+
+.wa-toggle-row {
+  margin-bottom: 0.75rem;
+}
+
+/* Soft hidden on request; can be re-enabled by removing this rule. */
+.wa-share-image-btn {
+  display: none;
+}
+
+/* Soft hidden on request; can be re-enabled by removing this rule. */
+.cost-setup-preview-panel {
+  display: none;
+}
+
+.rate-image-panel {
+  /* Soft hidden on request; keep styles intact for quick unhide later. */
+  display: none;
+  margin-top: 1rem;
+  padding: 1rem;
+  border-radius: 12px;
+  background: linear-gradient(180deg, rgba(255, 250, 224, 0.06) 0%, rgba(255, 219, 96, 0.03) 100%);
+  border: 1px solid var(--c-border2);
+}
+
+.rate-image-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.85rem;
+}
+
+.rate-image-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+@media (max-width: 640px) {
+  .rate-image-top {
+    flex-direction: column;
+  }
 }
 
 /* ── Empty state ─────────────────────────────────── */

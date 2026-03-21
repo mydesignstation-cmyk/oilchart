@@ -80,9 +80,6 @@ export function buildMessage(rates: OilRates, opts: MessageOptions = {}): string
     lines.push("");
   }
 
-  // Group products by brand first, then by oil type (preserve requested oil order)
-  const OIL_ICON: Record<OilType, string> = { SF: "🟨", SOYA: "🟩", PALM: "🟧" };
-
   // Preferred brand ordering; any other brands appear after these in original discovery order
   const BRAND_ORDER = ["WHITE APPLE", "BESTTASTE"];
   const allBrands = Array.from(
@@ -120,7 +117,7 @@ export function buildMessage(rates: OilRates, opts: MessageOptions = {}): string
       if (!firstSection) lines.push("");
       firstSection = false;
 
-      lines.push(`${OIL_ICON[oilType]} *${brandName} ${OIL_LABELS[oilType]}*`);
+      lines.push(`*${brandName} ${OIL_LABELS[oilType]}*`);
       lines.push("");
 
       for (const p of group) {
