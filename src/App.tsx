@@ -11,7 +11,7 @@ import type { Tier } from "@/data/products";
 const today = new Date().toISOString().split("T")[0];
 const ROWS_STORAGE_KEY = "cost_setup_rows";
 const ROUNDING_STORAGE_KEY = "cost_setup_auto_round";
-const DEFAULT_RATES: OilRates = { SF: 167, SOYA: 146, PALM: 140 };
+const DEFAULT_RATES: OilRates = { SF: 177, SOYA: 157, PALM: 150 };
 
 function readStoredRounding(): boolean {
   const raw = localStorage.getItem(ROUNDING_STORAGE_KEY);
@@ -45,7 +45,7 @@ function readStoredRows(): CostSetupRow[] {
     // This removes legacy unmatched rows and keeps saved B/C values where names match.
     const savedByName = new Map(normalized.map((row) => [row.product_name, row]));
 
-    return initialCostSetup.map((row) => {
+    const canonicalRows = initialCostSetup.map((row) => {
       const saved =
         savedByName.get(row.product_name) ??
         savedByName.get(`WHITE APPLE SF ${row.product_name}`);
@@ -60,6 +60,12 @@ function readStoredRows(): CostSetupRow[] {
         is_active: saved.is_active,
       };
     });
+
+    // Keep any saved rows that are not in the canonical seed so nothing disappears.
+    const canonicalNames = new Set(canonicalRows.map((row) => row.product_name));
+    const extraSavedRows = normalized.filter((row) => !canonicalNames.has(row.product_name));
+
+    return [...canonicalRows, ...extraSavedRows];
   } catch {
     return initialCostSetup;
   }
@@ -104,6 +110,43 @@ export default function App() {
     localStorage.setItem(ROUNDING_STORAGE_KEY, String(value));
   }
 
+  function reloadDefaults() {
+    // Strong reset: overwrite storage with the canonical initial seed exactly,
+    // then reload so the UI reflects these defaults.
+    try {
+      localStorage.removeItem(ROWS_STORAGE_KEY);
+      const seed = initialCostSetup.map((r) => ({
+        id: r.id,
+        product_name: r.product_name,
+        multiplier_b: Number(r.multiplier_b) || 0,
+        extra_cost_c: Number(r.extra_cost_c) || 0,
+        is_active: Boolean(r.is_active),
+        created_at: r.created_at,
+      }));
+      localStorage.setItem(ROWS_STORAGE_KEY, JSON.stringify(seed));
+      // update in-memory state as well, then reload to clear any stale caches
+      persistRows(seed);
+    } catch (err) {
+      // swallow — still attempt a reload
+      // eslint-disable-next-line no-console
+      console.error("reloadDefaults error:", err);
+    }
+    window.location.reload();
+  }
+
+  function hardResetStorage() {
+    try {
+      localStorage.clear();
+      sessionStorage.clear();
+      // If the app ever used IndexedDB or other storage, instructive to delete, but
+      // here we just reload to pick up a clean state.
+    } catch (err) {
+      // eslint-disable-next-line no-console
+      console.error("hardResetStorage error:", err);
+    }
+    window.location.reload();
+  }
+
   return (
     <div className="page">
       <div className="page-inner">
@@ -116,6 +159,16 @@ export default function App() {
             <p className="app-subtitle">
               Calculate product prices · Generate WhatsApp rate list
             </p>
+          </div>
+          <div style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: 12 }}>
+            <label style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 14 }}>
+              <input
+                type="checkbox"
+                checked={autoRound}
+                onChange={(e) => handleAutoRoundChange(e.target.checked)}
+              />
+              <span style={{ color: "var(--c-text-muted)" }}>Round prices</span>
+            </label>
           </div>
         </header>
 
@@ -172,6 +225,8 @@ export default function App() {
             rows={costSetupRows}
             onRowsChange={persistRows}
             onSaveAll={persistRows}
+            onReloadDefaults={reloadDefaults}
+            onHardReset={hardResetStorage}
             onSaveRow={saveSingleRow}
           />
         )}
