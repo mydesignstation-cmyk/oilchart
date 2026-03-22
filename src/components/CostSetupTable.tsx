@@ -39,10 +39,12 @@ interface CostSetupTableProps {
   rows: CostSetupRow[];
   onRowsChange: (rows: CostSetupRow[]) => void;
   onSaveAll: (rows: CostSetupRow[]) => void;
+  onReloadDefaults: () => void;
+  onHardReset: () => void;
   onSaveRow: (rowId: number) => void;
 }
 
-export function CostSetupTable({ rows, onRowsChange, onSaveAll, onSaveRow }: CostSetupTableProps) {
+export function CostSetupTable({ rows, onRowsChange, onSaveAll, onReloadDefaults, onHardReset, onSaveRow }: CostSetupTableProps) {
   function updateNumeric(rowId: number, field: "multiplier_b" | "extra_cost_c", value: string) {
     const parsed = Number(value);
     onRowsChange(
@@ -68,9 +70,25 @@ export function CostSetupTable({ rows, onRowsChange, onSaveAll, onSaveRow }: Cos
           <p className="card-title">Cost Setup</p>
           <p className="card-desc">Admin editor for multiplier B and extra cost C.</p>
         </div>
-        <button className="btn btn-primary" onClick={() => onSaveAll(rows)}>
-          Save All
-        </button>
+        <div style={{ display: "flex", gap: 8 }}>
+          <button className="btn btn-primary" onClick={() => onSaveAll(rows)}>
+            Save All
+          </button>
+          <button className="btn btn-ghost" onClick={() => onReloadDefaults()} title="Clear saved rows and reload defaults">
+            Reload defaults
+          </button>
+          <button
+            className="btn btn-destructive"
+            onClick={() => {
+              if (confirm("Hard reset will clear all local storage and reload the app. Continue?")) {
+                onHardReset();
+              }
+            }}
+            title="Clear all localStorage and sessionStorage then reload"
+          >
+            Hard reset
+          </button>
+        </div>
       </div>
 
       <div style={{ overflowX: "auto" }}>
