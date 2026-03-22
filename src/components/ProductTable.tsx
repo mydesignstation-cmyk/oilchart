@@ -79,8 +79,12 @@ export function ProductTable({ rates, tier, onTierChange, costSetupRows, autoRou
 
                 {section.items.map((item) => {
                   const rounded = Math.round(item.price * 100) / 100;
+                  const isPouch = item.name.toUpperCase().includes("POUCH");
                   const isWhole = Math.abs(rounded - Math.trunc(rounded)) < 0.005;
-                  const priceStr = isWhole
+                  const priceStr = isPouch
+                    ? // always show two decimals for pouches
+                      rounded.toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+                    : isWhole
                     ? rounded.toLocaleString("en-IN", { maximumFractionDigits: 0 })
                     : rounded.toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
