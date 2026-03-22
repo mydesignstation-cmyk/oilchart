@@ -1,7 +1,6 @@
 import { products } from "@/data/products";
 import type { OilType, Product, Tier } from "@/data/products";
 import type { OilRates } from "@/utils/priceCalculator";
-import { calculatePrice } from "@/utils/priceCalculator";
 import type { CostSetupRow } from "@/data/costSetup";
 import { calculateCostSetupPrice } from "@/utils/costSetupCalculator";
 
@@ -11,48 +10,6 @@ const OIL_LABEL: Record<OilType, string> = {
   SF: "Sunflower Oil",
   SOYA: "Soya Oil",
   PALM: "Palm Oil",
-};
-
-const PREFERRED_SEQUENCE: Record<string, Partial<Record<OilType, string[]>>> = {
-  "WHITE APPLE": {
-    SF: [
-      "15LTR TIN NEW",
-      "15LTR JAR",
-      "13KG TIN NEW",
-      "13KG JAR",
-      "5LTR JAR(4)",
-      "5LTR JAR(3) PET",
-      "4 KG JAR",
-      "1LTR POUCH",
-      "840GM POUCH",
-    ],
-    SOYA: [
-      "15KG TIN NEW",
-      "15LTR TIN NEW",
-      "15LTR JAR",
-      "13KG TIN NEW",
-      "13KG JAR",
-      "5LTR JAR",
-      "4.200KG JAR",
-      "2LTR JAR",
-      "1KG POUCH",
-      "0.5KG POUCH",
-      "1LTR POUCH",
-      "0.5LTR POUCH",
-      "840GM POUCH",
-    ],
-  },
-  BESTTASTE: {
-    SOYA: [
-      "14.800KG TIN (ST)",
-      "13KG TIN (ST)",
-      "12.800KG TIN (ST)",
-      "12.800KG JAR",
-      "900GM POUCH",
-      "800GM POUCH",
-    ],
-    PALM: ["14.800KG TIN (ST)", "12.800KG TIN (ST)", "840GM POUCH"],
-  },
 };
 
 export interface HomepagePriceItem {
@@ -71,7 +28,7 @@ export interface HomepagePriceSection {
 
 export function getHomepagePriceSections(
   rates: OilRates,
-  tier: Tier,
+  _tier: Tier,
   costSetupRows: CostSetupRow[],
   autoRound: boolean,
 ): HomepagePriceSection[] {
