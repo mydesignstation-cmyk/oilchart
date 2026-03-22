@@ -65,12 +65,12 @@ export function CostSetupTable({ rows, onRowsChange, onSaveAll, onReloadDefaults
 
   return (
     <div className="card">
-      <div className="card-header">
+      <div className="card-header cost-setup-header">
         <div className="card-header-left">
           <p className="card-title">Cost Setup</p>
           <p className="card-desc">Admin editor for multiplier B and extra cost C.</p>
         </div>
-        <div style={{ display: "flex", gap: 8 }}>
+        <div className="cost-setup-actions">
           <button className="btn btn-primary" onClick={() => onSaveAll(rows)}>
             Save All
           </button>
