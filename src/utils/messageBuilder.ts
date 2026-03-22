@@ -148,9 +148,9 @@ export function buildMessageWithFooter(rates: OilRates, opts: MessageOptions = {
       "Note: (ST) = second tin.",
       "CD: Same day cheque Rs. 5/NOG and same day RTGS Rs. 10/NOG.",
       "Booking validity: 10 days (carrying charges of Rs. 2 NOG/day).",
-      "Daily rates are valid till working hours (6 PM).",
-      "Unloading charges will be given: Rs. 1/NOG only.",
-      "Payment validity: 7 days; cheque compulsory.",
+      "Daily rates are valid till working hours till 6 PM.",
+      "Unloading charges will be given Rs. 1/NOG only.",
+      "Payment validity: 7 days, cheque compulsory.",
     ],
   } = opts;
 
@@ -159,9 +159,9 @@ export function buildMessageWithFooter(rates: OilRates, opts: MessageOptions = {
   if (companyName) footerLines.push(`> ${companyName}`);
   if (custCare) footerLines.push(`> Cust. care: ${custCare}`);
 
-  // prepare notes block (not quoted). We'll insert an extra blank line
-  // between the quoted footer and the notes to give breathing room.
-  const notesBlock = notes && notes.length ? notes.join("\n") : "";
+  // prepare notes block as bullets (not quoted) with one blank line
+  // between the quoted footer and notes.
+  const notesBlock = notes && notes.length ? notes.map((n) => `- ${n}`).join("\n") : "";
 
   if (notesBlock) {
     return `${base}\n\n${footerLines.join("\n")}\n\n${notesBlock}`;

@@ -16,6 +16,15 @@ interface WhatsappPreviewProps {
   rateDate: string;
 }
 
+const FOOTER_NOTES: string[] = [
+  "Note: (ST) = second tin.",
+  "CD: Same day cheque Rs. 5/NOG and same day RTGS Rs. 10/NOG.",
+  "Booking validity: 10 days (carrying charges of Rs. 2 NOG/day).",
+  "Daily rates are valid till working hours till 6 PM.",
+  "Unloading charges will be given Rs. 1/NOG only.",
+  "Payment validity: 7 days, cheque compulsory.",
+];
+
 export function WhatsappPreview({ rates, tier, costSetupRows, autoRound, chartNumber, rateDate }: WhatsappPreviewProps) {
   const [copied, setCopied] = useState(false);
   const [downloading, setDownloading] = useState<"png" | "jpg" | null>(null);
@@ -51,6 +60,8 @@ export function WhatsappPreview({ rates, tier, costSetupRows, autoRound, chartNu
     lines.push("");
     lines.push("> BHAGYODAY PROTEINS & OIL REFINERY PVT LTD VAIJAPUR");
     lines.push("> Cust. care: +91-7249717971");
+    lines.push("");
+    FOOTER_NOTES.forEach((note) => lines.push(`- ${note}`));
 
     return lines.join("\n");
   }, [sections, rateDate, chartNumber]);
