@@ -9,6 +9,12 @@ const OIL_LABELS: Record<OilType, string> = {
   PALM: "PALM OIL",
 };
 
+const OIL_EMOJIS: Record<OilType, string> = {
+  SF: "🟨",
+  SOYA: "🟩",
+  PALM: "🟧",
+};
+
 const OIL_ORDER: OilType[] = ["SF", "SOYA", "PALM"];
 
 // Preferred product sequence per brand + oil type. Products not listed will appear after these.
@@ -117,7 +123,7 @@ export function buildMessage(rates: OilRates, opts: MessageOptions = {}): string
       if (!firstSection) lines.push("");
       firstSection = false;
 
-      lines.push(`*${brandName} ${OIL_LABELS[oilType]}*`);
+      lines.push(`*${OIL_EMOJIS[oilType]} ${brandName} ${OIL_LABELS[oilType]}*`);
       lines.push("");
 
       for (const p of group) {

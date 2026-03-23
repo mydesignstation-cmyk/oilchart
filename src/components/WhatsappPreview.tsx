@@ -7,6 +7,12 @@ import { RateImageCard } from "@/components/RateImageCard";
 import type { CostSetupRow } from "@/data/costSetup";
 import { getHomepagePriceSections } from "@/utils/homepagePricing";
 
+const OIL_EMOJI: Record<"SF" | "SOYA" | "PALM", string> = {
+  SF: "🟨",
+  SOYA: "🟩",
+  PALM: "🟧",
+};
+
 interface WhatsappPreviewProps {
   rates: OilRates;
   tier: Tier;
@@ -44,7 +50,8 @@ export function WhatsappPreview({ rates, tier, costSetupRows, autoRound, chartNu
 
     sections.forEach((section, sectionIndex) => {
       if (sectionIndex > 0) lines.push("");
-      lines.push(`*${section.title.toUpperCase()}*`);
+      const oilEmoji = OIL_EMOJI[section.oilType];
+      lines.push(`*${oilEmoji} ${section.title.toUpperCase()}*`);
       lines.push("");
 
       section.items.forEach((item) => {
@@ -66,6 +73,14 @@ export function WhatsappPreview({ rates, tier, costSetupRows, autoRound, chartNu
     return lines.join("\n");
   }, [sections, rateDate, chartNumber]);
 
+  function buildWhatsAppUrl(text: string, phone?: string): string {
+    const encodedText = encodeURIComponent(text);
+    const base = "https://api.whatsapp.com/send";
+    return phone
+      ? `${base}?phone=${phone}&text=${encodedText}`
+      : `${base}?text=${encodedText}`;
+  }
+
   async function handleCopy() {
     try {
       await navigator.clipboard.writeText(message);
@@ -75,13 +90,13 @@ export function WhatsappPreview({ rates, tier, costSetupRows, autoRound, chartNu
   }
 
   function handleWhatsApp() {
-    const url = `https://wa.me/?text=${encodeURIComponent(message)}`;
+    const url = buildWhatsAppUrl(message);
     window.open(url, "_blank", "noopener,noreferrer");
   }
 
   function handleWhatsAppOffice() {
     const officeNumber = "917249717971";
-    const url = `https://wa.me/${officeNumber}?text=${encodeURIComponent(message)}`;
+    const url = buildWhatsAppUrl(message, officeNumber);
     window.open(url, "_blank", "noopener,noreferrer");
   }
 
@@ -132,7 +147,8 @@ export function WhatsappPreview({ rates, tier, costSetupRows, autoRound, chartNu
   async function handleShareImageOnWhatsApp() {
     setSharingImage(true);
     try {
-      const isMobile = /Android|iPhone/.test(navigator.userAgent);
+      const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent)
+        || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
       if (!isMobile) {
         alert("Image sharing works on mobile only");
         return;
