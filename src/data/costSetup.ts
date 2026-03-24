@@ -19,6 +19,7 @@ export interface CostSetupSequenceItem {
 }
 
 export const COST_SETUP_SEQUENCE: CostSetupSequenceItem[] = [
+  { product_name: "15KG TIN NEW", pack_kg: 15, default_multiplier_b: 15, default_extra_cost_c: 160 },
   { product_name: "15LTR TIN NEW", pack_kg: 15, default_multiplier_b: 13.65, default_extra_cost_c: 160 },
   { product_name: "15LTR JAR", pack_kg: 15, default_multiplier_b: 13.65, default_extra_cost_c: 160 },
   { product_name: "13KG TIN NEW", pack_kg: 13, default_multiplier_b: 13, default_extra_cost_c: 160 },
@@ -63,6 +64,9 @@ const EXTRA_PRODUCT_ROWS: CostSetupRow[] = products
 
 // Per-product prefills for multiplier B and extra cost C (brand + oilType + name key)
 const DEFAULT_B_MAP: Record<string, number> = {
+  // WHITE APPLE SF
+  "WHITE APPLE SF 15KG TIN NEW": 15,
+
   // WHITE APPLE SOYA
   "WHITE APPLE SOYA 15KG TIN NEW": 15,
   "WHITE APPLE SOYA 15LTR TIN NEW": 13.65,
@@ -94,6 +98,9 @@ const DEFAULT_B_MAP: Record<string, number> = {
 };
 
 const DEFAULT_C_MAP: Record<string, number> = {
+  // WHITE APPLE SF
+  "WHITE APPLE SF 15KG TIN NEW": 160,
+
   // WHITE APPLE SOYA
   "WHITE APPLE SOYA 15KG TIN NEW": 160,
   "WHITE APPLE SOYA 15LTR TIN NEW": 160,
