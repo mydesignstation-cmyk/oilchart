@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import type { OilRates } from "@/utils/priceCalculator";
 
 interface RateControllerProps {
@@ -17,6 +17,35 @@ export function RateController({
   const [localRates, setLocalRates] = useState<OilRates>({ ...rates });
   const [localChart, setLocalChart] = useState(chartNumber);
   const [localDate, setLocalDate] = useState(rateDate);
+
+  // Load persisted live rates from sessionStorage on mount
+  useEffect(() => {
+    try {
+      const raw = sessionStorage.getItem("liveRates");
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (parsed && parsed.rates) {
+          setLocalRates(parsed.rates);
+          setLocalChart(parsed.chart ?? chartNumber);
+          setLocalDate(parsed.date ?? rateDate);
+          onUpdate(parsed.rates, parsed.chart ?? chartNumber, parsed.date ?? rateDate);
+        }
+      }
+    } catch (e) {
+      // ignore parse errors
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Persist live rates to sessionStorage whenever they change
+  useEffect(() => {
+    try {
+      const payload = { rates: localRates, chart: localChart, date: localDate };
+      sessionStorage.setItem("liveRates", JSON.stringify(payload));
+    } catch (e) {
+      // ignore storage errors
+    }
+  }, [localRates, localChart, localDate]);
 
   function setRate(key: keyof OilRates, value: string) {
     const parsed = parseFloat(value);
@@ -115,15 +144,15 @@ export function RateController({
           <div className="rates-summary">
             <span className="rate-chip">
               <span className="rate-chip-dot" style={{ background: "#D29922" }} />
-              SF <strong>{rates.SF}</strong>
+              SF <strong>{localRates.SF}</strong>
             </span>
             <span className="rate-chip">
               <span className="rate-chip-dot" style={{ background: "#3FB950" }} />
-              SOYA <strong>{rates.SOYA}</strong>
+              SOYA <strong>{localRates.SOYA}</strong>
             </span>
             <span className="rate-chip">
               <span className="rate-chip-dot" style={{ background: "#F78166" }} />
-              PALM <strong>{rates.PALM}</strong>
+              PALM <strong>{localRates.PALM}</strong>
             </span>
           </div>
         </div>
