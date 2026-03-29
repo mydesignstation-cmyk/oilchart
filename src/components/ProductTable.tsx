@@ -61,7 +61,6 @@ export function ProductTable({ rates, tier, onTierChange, costSetupRows, autoRou
             <tr>
               <th>Product</th>
               <th>Oil</th>
-              <th>Pack (kg)</th>
               <th>{TIER_LABELS[tier]} Price</th>
             </tr>
           </thead>
@@ -69,7 +68,7 @@ export function ProductTable({ rates, tier, onTierChange, costSetupRows, autoRou
             {sections.map((section) => (
               <Fragment key={`${section.brand}-${section.oilType}`}>
                 <tr className="group-row">
-                  <td colSpan={4}>
+                  <td colSpan={3}>
                     <span className={`brand-name ${section.brand === "WHITE APPLE" ? "brand-white" : section.brand === "BESTTASTE" ? "brand-besttaste" : ""}`}>
                       {section.brand}
                     </span>
@@ -102,7 +101,6 @@ export function ProductTable({ rates, tier, onTierChange, costSetupRows, autoRou
                     <tr key={`${section.brand}-${section.oilType}-${item.name}`}>
                       <td className="product-name">{item.name}</td>
                       <td><span className={OIL_BADGE[item.oilType]}>{item.oilType}</span></td>
-                      <td className="pack-cell">{item.packSize}</td>
                       <td className="price-cell" style={{ color: priceColor }}>₹{priceStr}</td>
                     </tr>
                   );

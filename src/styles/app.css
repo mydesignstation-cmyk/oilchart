@@ -161,6 +161,7 @@ html, body {
   letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--c-text-muted);
+  white-space: nowrap;
 }
 
 /* ── Input ───────────────────────────────────────── */

@@ -100,7 +100,7 @@ export function RateController({
 
         <div className="rate-grid rate-grid-oils">
           <div className="field">
-            <label className="field-label" htmlFor="sf-rate">SF Rate (₹/kg)</label>
+            <label className="field-label" htmlFor="sf-rate">SF Rate</label>
             <input
               className="input"
               id="sf-rate"
@@ -113,7 +113,7 @@ export function RateController({
           </div>
 
           <div className="field">
-            <label className="field-label" htmlFor="soya-rate">SOYA Rate (₹/kg)</label>
+            <label className="field-label" htmlFor="soya-rate">SOYA Rate</label>
             <input
               className="input"
               id="soya-rate"
@@ -126,7 +126,7 @@ export function RateController({
           </div>
 
           <div className="field">
-            <label className="field-label" htmlFor="palm-rate">PALM Rate (₹/kg)</label>
+            <label className="field-label" htmlFor="palm-rate">PALM Rate</label>
             <input
               className="input"
               id="palm-rate"
