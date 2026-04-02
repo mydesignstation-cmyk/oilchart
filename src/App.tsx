@@ -11,7 +11,28 @@ import type { Tier } from "@/data/products";
 const today = new Date().toISOString().split("T")[0];
 const ROWS_STORAGE_KEY = "cost_setup_rows";
 const ROUNDING_STORAGE_KEY = "cost_setup_auto_round";
+const RATES_STORAGE_KEY = "live_rates_v1";
 const DEFAULT_RATES: OilRates = { SF: 177, SOYA: 157, PALM: 150 };
+
+type StoredRates = {
+  rates: OilRates;
+  rateDate?: string;
+  chartNumber?: string;
+};
+
+function readStoredRates(): StoredRates | null {
+  try {
+    const raw = localStorage.getItem(RATES_STORAGE_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw) as StoredRates;
+    if (!parsed || typeof parsed !== "object") return null;
+    // Basic validation of structure
+    if (!parsed.rates || typeof parsed.rates !== "object") return null;
+    return parsed;
+  } catch {
+    return null;
+  }
+}
 
 function readStoredRounding(): boolean {
   const raw = localStorage.getItem(ROUNDING_STORAGE_KEY);
@@ -73,10 +94,19 @@ function readStoredRows(): CostSetupRow[] {
 
 export default function App() {
   const [screen, setScreen] = useState<"home" | "cost-setup">("home");
-  const [rates, setRates] = useState<OilRates>(DEFAULT_RATES);
+  const [rates, setRates] = useState<OilRates>(() => {
+    const stored = readStoredRates();
+    return stored?.rates ?? DEFAULT_RATES;
+  });
   const [tier, setTier] = useState<Tier>("self");
-  const [chartNumber, setChartNumber] = useState("");
-  const [rateDate, setRateDate] = useState(today);
+  const [chartNumber, setChartNumber] = useState<string>(() => {
+    const stored = readStoredRates();
+    return stored?.chartNumber ?? "";
+  });
+  const [rateDate, setRateDate] = useState<string>(() => {
+    const stored = readStoredRates();
+    return stored?.rateDate ?? today;
+  });
   const [autoRound, setAutoRound] = useState<boolean>(() => readStoredRounding());
   const [costSetupRows, setCostSetupRows] = useState<CostSetupRow[]>(() => readStoredRows());
 
@@ -103,6 +133,15 @@ export default function App() {
     setRates(r);
     setChartNumber(c);
     setRateDate(d);
+
+    // Persist latest live rates so a refresh shows the last saved values
+    try {
+      const payload: StoredRates = { rates: r, rateDate: d, chartNumber: c };
+      localStorage.setItem(RATES_STORAGE_KEY, JSON.stringify(payload));
+    } catch (err) {
+      // eslint-disable-next-line no-console
+      console.error("failed to persist live rates:", err);
+    }
   }
 
   function handleAutoRoundChange(value: boolean) {

@@ -12,6 +12,9 @@ dist
 dist-ssr
 *.local
 
+# bun runtime binaries (large) — do not track
+bun/
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

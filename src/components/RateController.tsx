@@ -21,14 +21,14 @@ export function RateController({
   // Load persisted live rates from sessionStorage on mount
   useEffect(() => {
     try {
-      const raw = sessionStorage.getItem("liveRates");
+      const raw = localStorage.getItem("live_rates_v1");
       if (raw) {
         const parsed = JSON.parse(raw);
         if (parsed && parsed.rates) {
           setLocalRates(parsed.rates);
-          setLocalChart(parsed.chart ?? chartNumber);
-          setLocalDate(parsed.date ?? rateDate);
-          onUpdate(parsed.rates, parsed.chart ?? chartNumber, parsed.date ?? rateDate);
+          setLocalChart(parsed.chartNumber ?? chartNumber);
+          setLocalDate(parsed.rateDate ?? rateDate);
+          onUpdate(parsed.rates, parsed.chartNumber ?? chartNumber, parsed.rateDate ?? rateDate);
         }
       }
     } catch (e) {
@@ -40,8 +40,8 @@ export function RateController({
   // Persist live rates to sessionStorage whenever they change
   useEffect(() => {
     try {
-      const payload = { rates: localRates, chart: localChart, date: localDate };
-      sessionStorage.setItem("liveRates", JSON.stringify(payload));
+      const payload = { rates: localRates, chartNumber: localChart, rateDate: localDate };
+      localStorage.setItem("live_rates_v1", JSON.stringify(payload));
     } catch (e) {
       // ignore storage errors
     }
