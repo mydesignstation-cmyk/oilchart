@@ -110,6 +110,10 @@ export default function App() {
   const [autoRound, setAutoRound] = useState<boolean>(() => readStoredRounding());
   const [costSetupRows, setCostSetupRows] = useState<CostSetupRow[]>(() => readStoredRows());
 
+  // Vercel/Vite runtime flag: set `VITE_PAUSE` to "true" to pause the app.
+  // Default is false when the variable is absent or not set to "true".
+  const isPaused = ((import.meta.env.VITE_PAUSE ?? "false") as string).toLowerCase() === "true";
+
   function persistRows(rows: CostSetupRow[]) {
     setCostSetupRows(rows);
     localStorage.setItem(ROWS_STORAGE_KEY, JSON.stringify(rows));
@@ -184,6 +188,19 @@ export default function App() {
       console.error("hardResetStorage error:", err);
     }
     window.location.reload();
+  }
+
+  if (isPaused) {
+    return (
+      <div className="page">
+        <div className="page-inner" style={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: "60vh" }}>
+          <div style={{ textAlign: "center", padding: 24 }}>
+            <h1 style={{ marginBottom: 8 }}>Account is paused</h1>
+            <p style={{ color: "var(--c-text-muted)" }}>The application is currently paused. Please try again later.</p>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   return (
