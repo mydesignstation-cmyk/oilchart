@@ -39,6 +39,7 @@
     "tailwind-merge": "^3.5.0",
     "tailwindcss": "^4.2.1",
     "typescript": "^5.0.2",
-    "vite": "^5"
+    "vite": "^5",
+    "vite-plugin-pwa": "^1.2.0"
   }
 }
